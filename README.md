@@ -1,5 +1,7 @@
 # cloudsec-rag-eval
 
+[![CI](https://github.com/mattmuldoon48/cloudsec-rag-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/mattmuldoon48/cloudsec-rag-eval/actions/workflows/ci.yml)
+
 A local RAG evaluation system for cloud security guidance built as a production-minded portfolio project.
 
 ## Project overview
@@ -197,5 +199,5 @@ Exported summaries include top-line metrics plus a compact per-question table su
 
 1. Add more realistic cloud security documentation.
 2. Add a small curated real-doc ingestion workflow.
-3. Add CI wiring for tests and regression gates.
+3. Add CI regression-gate fixtures once stable baseline artifacts are checked in.
 4. Add a lightweight dashboard once the core CLI workflow is stable.
