@@ -233,14 +233,14 @@ Configuration:
 - Chunk overlap: `100`
 
 Latest local result:
-- Questions: `6`
-- Retrieval recall@k: `1.0`
+- Questions: `8`
+- Retrieval recall@k: `0.9375`
 - Average faithfulness score: `1.0`
-- Average latency: `3338.41 ms`
-- Estimated cost: `$0.008756`
+- Average latency: `3136.98 ms`
+- Estimated cost: `$0.012721`
 - Missing expected answer points: `0`
 
-These metrics are from a small starter eval set and should be treated as a baseline sanity check, not a broad benchmark claim.
+These metrics are from a small starter eval set and should be treated as a baseline sanity check, not a broad benchmark claim. The eval set includes two multi-document questions; top-3 retrieval missed one expected source on the CloudTrail-plus-NIST question.
 
 ## Experiment comparison
 
@@ -250,10 +250,10 @@ Latest local comparison:
 
 | Experiment | Recall@k | Faithfulness | Avg latency ms | Est. cost USD |
 | --- | ---: | ---: | ---: | ---: |
-| `official_notes` | `1.0` | `1.0` | `3338.41` | `$0.008756` |
-| `official_notes_top5` | `1.0` | `1.0` | `3097.57` | `$0.01222` |
+| `official_notes` | `0.9375` | `1.0` | `3136.98` | `$0.012721` |
+| `official_notes_top5` | `1.0` | `1.0` | `2200.65` | `$0.017195` |
 
-Observed result on the small starter eval: top-5 preserved retrieval and faithfulness, passed the regression gate, and increased estimated cost because more retrieved evidence was included. The latency difference was favorable in this run, but this small sample should not be treated as a stable latency benchmark.
+Observed result on the small starter eval: top-5 recovered the missing source for the harder multi-document question, preserved faithfulness, and passed the regression gate. Estimated cost increased because more retrieved evidence was included. The latency difference was favorable in this run, but this small sample should not be treated as a stable latency benchmark.
 
 ## Roadmap
 
