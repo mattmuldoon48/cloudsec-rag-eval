@@ -91,6 +91,8 @@ python scripts/ingest_docs.py
 
 The loader currently skips `data/raw_docs/README.md` so folder instructions do not become retrieval evidence. The starter docs are synthetic samples and are clearly marked as non-official in the manifest.
 
+The repo also includes concise official-source notes based on AWS IAM, AWS CloudTrail, and NIST SP 800-61 Rev. 3. These are intentionally short local summaries with source URLs, not full copies of the upstream documentation.
+
 ## How to build the index
 
 ```bash
@@ -109,6 +111,12 @@ python scripts/build_index.py --config configs/baseline.json
 ```
 
 Named configs can write to separate index folders such as `data/indexes/baseline/`, which makes regression comparisons cleaner.
+
+To build the official-source-notes experiment:
+
+```bash
+python scripts/build_index.py --config configs/official_notes.json
+```
 
 ## How to ask a question
 
@@ -136,6 +144,12 @@ To run a named experiment:
 
 ```bash
 python scripts/run_eval.py --config configs/baseline.json
+```
+
+To run the official-source-notes eval set:
+
+```bash
+python scripts/run_eval.py --config configs/official_notes.json
 ```
 
 ## How to export reports
@@ -195,9 +209,29 @@ Each per-question result includes retrieved doc IDs, recall@k, the generated ans
 
 Exported summaries include top-line metrics plus a compact per-question table suitable for portfolio notes or regression review.
 
+## Baseline snapshot
+
+The current official-source-notes baseline was run locally against concise notes derived from official AWS IAM, AWS CloudTrail, and NIST SP 800-61 Rev. 3 sources.
+
+Configuration:
+- Experiment: `official_notes`
+- Eval set: `data/eval_sets/cloudsec_official_notes_eval_v1.jsonl`
+- Top-k: `3`
+- Chunk size: `700`
+- Chunk overlap: `100`
+
+Latest local result:
+- Questions: `6`
+- Retrieval recall@k: `1.0`
+- Average faithfulness score: `1.0`
+- Average latency: `3338.41 ms`
+- Estimated cost: `$0.008756`
+- Missing expected answer points: `0`
+
+These metrics are from a small starter eval set and should be treated as a baseline sanity check, not a broad benchmark claim.
+
 ## Roadmap
 
-1. Add more realistic cloud security documentation.
-2. Add a small curated real-doc ingestion workflow.
-3. Add CI regression-gate fixtures once stable baseline artifacts are checked in.
-4. Add a lightweight dashboard once the core CLI workflow is stable.
+1. Add CI regression-gate fixtures once stable baseline artifacts are checked in.
+2. Expand the official-source eval set with harder multi-document questions.
+3. Add a lightweight dashboard once the core CLI workflow is stable.

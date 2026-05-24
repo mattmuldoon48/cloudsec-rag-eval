@@ -23,6 +23,30 @@
       "source_url": null,
       "is_official": false,
       "notes": "Synthetic starter document for local evaluation. Not official NIST, AWS, or other standards guidance."
+    },
+    {
+      "doc_id": "aws_iam_official_notes",
+      "title": "AWS IAM Security Best Practices (official-source notes)",
+      "source_type": "official_notes",
+      "source_url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+      "is_official": true,
+      "notes": "Concise local notes based on official AWS IAM documentation; not a full copy of the source."
+    },
+    {
+      "doc_id": "aws_cloudtrail_official_notes",
+      "title": "AWS CloudTrail Logging and Monitoring (official-source notes)",
+      "source_type": "official_notes",
+      "source_url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html",
+      "is_official": true,
+      "notes": "Concise local notes based on official AWS CloudTrail documentation; not a full copy of the source."
+    },
+    {
+      "doc_id": "nist_sp800_61r3_official_notes",
+      "title": "NIST SP 800-61 Rev. 3 Incident Response (official-source notes)",
+      "source_type": "official_notes",
+      "source_url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+      "is_official": true,
+      "notes": "Concise local notes based on NIST SP 800-61 Rev. 3; not a full copy of the source."
     }
   ]
 }
