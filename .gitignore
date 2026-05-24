@@ -9,5 +9,7 @@ data/indexes/*
 !data/indexes/.gitkeep
 reports/runs/*
 !reports/runs/.gitkeep
+reports/summaries/*
+!reports/summaries/.gitkeep
 .DS_Store
 .pytest_cache/

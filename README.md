@@ -28,7 +28,8 @@ A true production-ready RAG system is more than a chat interface. It requires ev
 - `data/indexes/` – saved chunks, embeddings, and index metadata.
 - `data/eval_sets/` – evaluation questions with expected doc coverage.
 - `prompts/` – answer generation and faithfulness judge prompts.
-- `reports/runs/` – saved retrieval and answer evaluation results.
+- `reports/runs/` – saved retrieval and answer evaluation JSON results.
+- `reports/summaries/` – generated Markdown and CSV report exports.
 
 ## Setup
 
@@ -119,6 +120,16 @@ To run a named experiment:
 python scripts/run_eval.py --config configs/baseline.json
 ```
 
+## How to export reports
+
+Turn a JSON run report into a readable Markdown summary and per-question CSV:
+
+```bash
+python scripts/export_report.py reports/runs/run_baseline_<timestamp>_<run_id>.json
+```
+
+By default, exports are written to `reports/summaries/`.
+
 ## Example output
 
 Question answering prints a cited answer and source list:
@@ -142,9 +153,11 @@ using roles instead of long-lived credentials [1].
 
 Each per-question result includes retrieved doc IDs, recall@k, the generated answer, a judge faithfulness score, citation checks, and any missing expected answer points.
 
+Exported summaries include top-line metrics plus a compact per-question table suitable for portfolio notes or regression review.
+
 ## Roadmap
 
 1. Add more realistic cloud security documentation.
 2. Add richer regression comparisons for prompt/embedding changes.
-3. Add markdown or CSV report exports for portfolio-friendly summaries.
+3. Add a small curated real-doc ingestion workflow.
 4. Add a lightweight dashboard once the core CLI workflow is stable.
