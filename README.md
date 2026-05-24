@@ -118,6 +118,12 @@ To build the official-source-notes experiment:
 python scripts/build_index.py --config configs/official_notes.json
 ```
 
+To build the top-5 retrieval variant:
+
+```bash
+python scripts/build_index.py --config configs/official_notes_top5.json
+```
+
 ## How to ask a question
 
 ```bash
@@ -150,6 +156,12 @@ To run the official-source-notes eval set:
 
 ```bash
 python scripts/run_eval.py --config configs/official_notes.json
+```
+
+To run the top-5 retrieval variant:
+
+```bash
+python scripts/run_eval.py --config configs/official_notes_top5.json
 ```
 
 ## How to export reports
@@ -229,6 +241,19 @@ Latest local result:
 - Missing expected answer points: `0`
 
 These metrics are from a small starter eval set and should be treated as a baseline sanity check, not a broad benchmark claim.
+
+## Experiment comparison
+
+The `official_notes_top5` experiment keeps chunking and prompts fixed while changing retrieval from `top_k=3` to `top_k=5`.
+
+Latest local comparison:
+
+| Experiment | Recall@k | Faithfulness | Avg latency ms | Est. cost USD |
+| --- | ---: | ---: | ---: | ---: |
+| `official_notes` | `1.0` | `1.0` | `3338.41` | `$0.008756` |
+| `official_notes_top5` | `1.0` | `1.0` | `3097.57` | `$0.01222` |
+
+Observed result on the small starter eval: top-5 preserved retrieval and faithfulness, passed the regression gate, and increased estimated cost because more retrieved evidence was included. The latency difference was favorable in this run, but this small sample should not be treated as a stable latency benchmark.
 
 ## Roadmap
 

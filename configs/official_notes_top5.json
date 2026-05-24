@@ -1,0 +1,10 @@
+{
+  "experiment_name": "official_notes_top5",
+  "chunk_size": 700,
+  "chunk_overlap": 100,
+  "top_k": 5,
+  "indexes_dir": "data/indexes/official_notes_top5",
+  "eval_set_path": "data/eval_sets/cloudsec_official_notes_eval_v1.jsonl",
+  "answer_prompt_path": "prompts/answer_v1.txt",
+  "faithfulness_judge_prompt_path": "prompts/faithfulness_judge_v1.txt"
+}
