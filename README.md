@@ -146,6 +146,28 @@ python scripts/export_report.py reports/runs/run_baseline_<timestamp>_<run_id>.j
 
 By default, exports are written to `reports/summaries/`.
 
+## How to check regressions
+
+Compare a baseline run against a candidate run and fail if quality drops or latency rises too much:
+
+```bash
+python scripts/check_regression.py reports/runs/baseline.json reports/runs/candidate.json
+```
+
+Default gates:
+- recall delta must be at least `-0.01`
+- faithfulness delta must be at least `-0.01`
+- latency increase must be no more than `1000 ms`
+
+You can tune thresholds:
+
+```bash
+python scripts/check_regression.py reports/runs/baseline.json reports/runs/candidate.json \
+  --min-recall-delta -0.02 \
+  --min-faithfulness-delta -0.02 \
+  --max-latency-increase-ms 1500
+```
+
 ## Example output
 
 Question answering prints a cited answer and source list:
@@ -174,6 +196,6 @@ Exported summaries include top-line metrics plus a compact per-question table su
 ## Roadmap
 
 1. Add more realistic cloud security documentation.
-2. Add richer regression comparisons for prompt/embedding changes.
-3. Add a small curated real-doc ingestion workflow.
+2. Add a small curated real-doc ingestion workflow.
+3. Add CI wiring for tests and regression gates.
 4. Add a lightweight dashboard once the core CLI workflow is stable.
