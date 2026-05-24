@@ -48,6 +48,10 @@ def retrieve_chunks(
                 source_path=chunk.source_path,
                 chunk_index=chunk.chunk_index,
                 text=chunk.text,
+                source_type=chunk.source_type,
+                source_url=chunk.source_url,
+                is_official=chunk.is_official,
+                notes=chunk.notes,
                 score=float(1.0 - score),
             )
         )

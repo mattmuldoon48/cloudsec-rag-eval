@@ -43,6 +43,10 @@ def chunk_documents(documents: Iterable[Document], chunk_size: int, chunk_overla
                     source_path=document.source_path,
                     chunk_index=index,
                     text=chunk_text_content,
+                    source_type=document.source_type,
+                    source_url=document.source_url,
+                    is_official=document.is_official,
+                    notes=document.notes,
                 )
             )
 

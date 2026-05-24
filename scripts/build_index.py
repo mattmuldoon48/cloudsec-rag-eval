@@ -21,7 +21,7 @@ def main() -> None:
     ingest_raw_docs(settings)
 
     llm_client = LLMClient(settings)
-    docs = load_raw_documents(settings.raw_docs_dir)
+    docs = load_raw_documents(settings.raw_docs_dir, settings.doc_manifest_path)
     chunk_list = chunk_documents(docs, settings.chunk_size, settings.chunk_overlap)
 
     print(f"Embedding {len(chunk_list)} chunks...")

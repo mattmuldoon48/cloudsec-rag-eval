@@ -9,8 +9,18 @@ from .config import Settings
 from .schemas import Chunk, Document
 
 
-def load_raw_documents(raw_dir: Path) -> List[Document]:
+def load_doc_manifest(manifest_path: Path) -> dict[str, dict]:
+    if not manifest_path.exists():
+        return {}
+    with manifest_path.open("r", encoding="utf-8") as handle:
+        data = json.load(handle)
+    documents = data.get("documents", [])
+    return {item["doc_id"]: item for item in documents}
+
+
+def load_raw_documents(raw_dir: Path, manifest_path: Path | None = None) -> List[Document]:
     raw_dir = raw_dir.expanduser()
+    manifest = load_doc_manifest(manifest_path) if manifest_path else {}
     documents: list[Document] = []
 
     source_paths = sorted(raw_dir.glob("*.md")) + sorted(raw_dir.glob("*.txt"))
@@ -21,13 +31,18 @@ def load_raw_documents(raw_dir: Path) -> List[Document]:
         if not text:
             continue
         doc_id = path.stem
+        metadata = manifest.get(doc_id, {})
         title = text.splitlines()[0].strip("# ") if text else doc_id
         documents.append(
             Document(
                 doc_id=doc_id,
-                title=title,
+                title=metadata.get("title", title),
                 source_path=str(path),
                 text=text,
+                source_type=metadata.get("source_type", "sample"),
+                source_url=metadata.get("source_url"),
+                is_official=metadata.get("is_official", False),
+                notes=metadata.get("notes"),
             )
         )
 
@@ -43,7 +58,7 @@ def save_jsonl(records: Iterable[Document | Chunk], output_path: Path) -> None:
 
 def ingest_raw_docs(settings: Settings | None = None) -> list[Document]:
     settings = settings or Settings()
-    documents = load_raw_documents(settings.raw_docs_dir)
+    documents = load_raw_documents(settings.raw_docs_dir, settings.doc_manifest_path)
     save_jsonl(documents, settings.processed_dir / "docs.jsonl")
 
     chunks = chunk_documents(documents, settings.chunk_size, settings.chunk_overlap)

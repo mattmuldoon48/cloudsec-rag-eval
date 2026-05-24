@@ -10,6 +10,10 @@ class Document(BaseModel):
     title: str
     source_path: str
     text: str
+    source_type: str = "sample"
+    source_url: str | None = None
+    is_official: bool = False
+    notes: str | None = None
 
 
 class Chunk(BaseModel):
@@ -19,6 +23,10 @@ class Chunk(BaseModel):
     source_path: str
     chunk_index: int
     text: str
+    source_type: str = "sample"
+    source_url: str | None = None
+    is_official: bool = False
+    notes: str | None = None
 
 
 class RetrievedChunk(Chunk):

@@ -1,0 +1,28 @@
+{
+  "documents": [
+    {
+      "doc_id": "aws_iam_best_practices",
+      "title": "AWS IAM Best Practices (sample)",
+      "source_type": "sample",
+      "source_url": null,
+      "is_official": false,
+      "notes": "Synthetic starter document for local evaluation. Not official AWS documentation."
+    },
+    {
+      "doc_id": "aws_logging_monitoring",
+      "title": "AWS Logging and Monitoring (sample)",
+      "source_type": "sample",
+      "source_url": null,
+      "is_official": false,
+      "notes": "Synthetic starter document for local evaluation. Not official AWS documentation."
+    },
+    {
+      "doc_id": "incident_response_basics",
+      "title": "Incident Response Basics (sample)",
+      "source_type": "sample",
+      "source_url": null,
+      "is_official": false,
+      "notes": "Synthetic starter document for local evaluation. Not official NIST, AWS, or other standards guidance."
+    }
+  ]
+}

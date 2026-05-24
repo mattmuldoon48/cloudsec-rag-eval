@@ -24,6 +24,7 @@ A true production-ready RAG system is more than a chat interface. It requires ev
 - `src/cloudsec_rag/` – modular pipeline code for ingestion, chunking, embeddings, retrieval, generation, and evaluation.
 - `configs/` – named experiment configs for chunking, retrieval, prompts, and index locations.
 - `data/raw_docs/` – source markdown docs.
+- `data/doc_manifest.json` – source metadata for raw docs, including whether docs are official or synthetic.
 - `data/processed/` – intermediate serialized docs and chunks.
 - `data/indexes/` – saved chunks, embeddings, and index metadata.
 - `data/eval_sets/` – evaluation questions with expected doc coverage.
@@ -65,13 +66,28 @@ Set your OpenAI API key in `.env`.
 
 ## How to add docs
 
-Place new markdown files in `data/raw_docs/`. Then run:
+Place new markdown files in `data/raw_docs/`, then add metadata to `data/doc_manifest.json`.
+
+Example manifest entry:
+
+```json
+{
+  "doc_id": "aws_iam_best_practices",
+  "title": "AWS IAM Best Practices (sample)",
+  "source_type": "sample",
+  "source_url": null,
+  "is_official": false,
+  "notes": "Synthetic starter document for local evaluation. Not official AWS documentation."
+}
+```
+
+Then run:
 
 ```bash
 python scripts/ingest_docs.py
 ```
 
-The loader currently skips `data/raw_docs/README.md` so folder instructions do not become retrieval evidence.
+The loader currently skips `data/raw_docs/README.md` so folder instructions do not become retrieval evidence. The starter docs are synthetic samples and are clearly marked as non-official in the manifest.
 
 ## How to build the index
 

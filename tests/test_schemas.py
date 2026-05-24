@@ -4,9 +4,18 @@ from cloudsec_rag.schemas import Chunk, Document, EvalQuestion
 
 
 def test_document_schema_validation():
-    document = Document(doc_id="doc1", title="title", source_path="file.md", text="content")
+    document = Document(
+        doc_id="doc1",
+        title="title",
+        source_path="file.md",
+        text="content",
+        source_type="official",
+        source_url="https://example.com/doc",
+        is_official=True,
+    )
     assert document.doc_id == "doc1"
     assert document.title == "title"
+    assert document.is_official is True
 
 
 def test_chunk_schema_validation():

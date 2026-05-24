@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     chunk_overlap: int = 100
     top_k: int = 3
     raw_docs_dir: Path = Path("data/raw_docs")
+    doc_manifest_path: Path = Path("data/doc_manifest.json")
     processed_dir: Path = Path("data/processed")
     indexes_dir: Path = Path("data/indexes")
     eval_set_path: Path = Path("data/eval_sets/cloudsec_eval_v1.jsonl")
