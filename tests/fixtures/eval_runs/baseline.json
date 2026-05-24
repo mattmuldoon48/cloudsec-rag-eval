@@ -1,0 +1,15 @@
+{
+  "run_id": "fixture-baseline",
+  "timestamp": "2026-05-24T00:00:00Z",
+  "config": {
+    "experiment_name": "fixture_baseline",
+    "top_k": 3,
+    "chunk_size": 700,
+    "chunk_overlap": 100
+  },
+  "retrieval_recall_at_k": 0.9375,
+  "average_faithfulness_score": 1.0,
+  "average_latency_ms": 3136.98,
+  "estimated_cost_usd": 0.012721,
+  "per_question_results": []
+}

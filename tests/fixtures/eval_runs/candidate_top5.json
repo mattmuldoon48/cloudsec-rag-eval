@@ -1,0 +1,15 @@
+{
+  "run_id": "fixture-candidate-top5",
+  "timestamp": "2026-05-24T00:01:00Z",
+  "config": {
+    "experiment_name": "fixture_candidate_top5",
+    "top_k": 5,
+    "chunk_size": 700,
+    "chunk_overlap": 100
+  },
+  "retrieval_recall_at_k": 1.0,
+  "average_faithfulness_score": 1.0,
+  "average_latency_ms": 2200.65,
+  "estimated_cost_usd": 0.017195,
+  "per_question_results": []
+}

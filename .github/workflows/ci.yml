@@ -27,3 +27,10 @@ jobs:
 
       - name: Run tests
         run: poetry run pytest
+
+      - name: Run regression gate fixture
+        run: |
+          poetry run python scripts/check_regression.py \
+            tests/fixtures/eval_runs/baseline.json \
+            tests/fixtures/eval_runs/candidate_top5.json \
+            --max-latency-increase-ms 2500

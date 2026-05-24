@@ -257,6 +257,6 @@ Observed result on the small starter eval: top-5 recovered the missing source fo
 
 ## Roadmap
 
-1. Add CI regression-gate fixtures once stable baseline artifacts are checked in.
-2. Expand the official-source eval set with harder multi-document questions.
+1. Expand the official-source eval set with harder multi-document questions.
+2. Add more experiment configs for chunk size and prompt variants.
 3. Add a lightweight dashboard once the core CLI workflow is stable.
