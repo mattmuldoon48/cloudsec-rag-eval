@@ -137,6 +137,8 @@ Export a report:
 python scripts/export_report.py reports/runs/run_official_notes_<timestamp>_<run_id>.json
 ```
 
+A sanitized checked-in example is available at `examples/official_notes_top5_summary.md`.
+
 ## Adding Docs
 
 Place markdown or text files in `data/raw_docs/`, then add metadata to `data/doc_manifest.json`.
@@ -209,5 +211,4 @@ Current local status:
 ## Roadmap
 
 1. Add more experiment configs for chunk size and prompt variants.
-2. Add a small checked-in example summary report with sanitized outputs.
-3. Add a lightweight dashboard once the core CLI workflow is stable.
+2. Add a lightweight dashboard once the core CLI workflow is stable.
