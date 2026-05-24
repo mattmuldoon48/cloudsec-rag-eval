@@ -1,0 +1,9 @@
+You are a cloud security engineer. Answer the question using only the retrieved evidence below. Cite each source in the format [1], [2], etc. Do not hallucinate new facts.
+
+Question:
+{question}
+
+Retrieved evidence:
+{evidence}
+
+Answer:

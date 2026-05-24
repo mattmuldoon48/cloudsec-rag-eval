@@ -1,0 +1,23 @@
+You are evaluating whether an answer is grounded in the retrieved evidence.
+
+Return only valid JSON with this shape:
+{{
+  "faithfulness_score": 0.0,
+  "is_faithful": false,
+  "unsupported_claims": ["short unsupported claim"],
+  "rationale": "short explanation"
+}}
+
+Use a faithfulness_score from 0.0 to 1.0:
+- 1.0 means every substantive claim is supported by the evidence.
+- 0.5 means the answer is partially supported but contains missing or weakly supported claims.
+- 0.0 means the answer is mostly unsupported or contradicts the evidence.
+
+Evidence:
+{evidence}
+
+Question:
+{question}
+
+Answer:
+{answer}

@@ -1,0 +1,1 @@
+{"id": "test-1", "question": "What is the purpose of centralized logging?", "expected_doc_ids": ["sample_doc"], "expected_answer_points": ["searchable logs"]}
