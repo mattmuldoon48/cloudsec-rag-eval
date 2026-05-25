@@ -43,11 +43,23 @@ These metrics come from a small starter eval set and should be read as a local s
 | `official_q6` | NIST SP 800-61 Rev. 3 | `1.0` | `1.0` | yes | none |
 | `official_q7` | AWS IAM + AWS CloudTrail | `1.0` | `1.0` | yes | none |
 | `official_q8` | AWS CloudTrail + NIST SP 800-61 Rev. 3 | `1.0` | `1.0` | yes | none |
-| `official_q9`-`official_q17` | Single and multi-source coverage | mostly `1.0` | `1.0` | yes | mostly none |
+| `official_q9` | AWS IAM | `1.0` | `1.0` | yes | none |
+| `official_q10` | AWS IAM | `1.0` | `1.0` | yes | none |
+| `official_q11` | AWS CloudTrail | `1.0` | `1.0` | yes | none |
+| `official_q12` | AWS CloudTrail | `1.0` | `1.0` | yes | none |
+| `official_q13` | NIST SP 800-61 Rev. 3 | `1.0` | `1.0` | yes | none |
+| `official_q14` | NIST SP 800-61 Rev. 3 | `1.0` | `1.0` | yes | none |
+| `official_q15` | AWS IAM + AWS CloudTrail | `1.0` | `1.0` | yes | none |
+| `official_q16` | AWS CloudTrail + NIST SP 800-61 Rev. 3 | `1.0` | `1.0` | yes | none |
+| `official_q17` | AWS IAM + NIST SP 800-61 Rev. 3 | `1.0` | `1.0` | yes | none |
 | `official_q18` | Ambiguous prevention/detection/response | `0.6667` | `1.0` | yes | least privilege |
 | `official_q19` | Unexpected IAM policy change response | `0.6667` | `1.0` | yes | none |
-| `official_q20`-`official_q22` | Not-enough-information checks | `1.0` | `1.0` | yes | some expected-point misses |
-| `official_q23`-`official_q25` | Avoided-doc retrieval checks | `1.0` | `1.0` | yes | none |
+| `official_q20` | Not enough information: exact key-rotation days | `1.0` | `1.0` | yes | rotate or update when needed; remove inactive keys |
+| `official_q21` | Not enough information: required SIEM product | `1.0` | `1.0` | yes | logs should be queryable or searchable |
+| `official_q22` | Not enough information: 24-hour regulatory deadline | `1.0` | `1.0` | yes | not enough information for a 24 hour regulatory deadline; coordination mechanisms |
+| `official_q23` | Avoid unrelated NIST retrieval for IAM credential risk | `1.0` | `1.0` | yes | none |
+| `official_q24` | Avoid unrelated IAM/NIST retrieval for CloudTrail API records | `1.0` | `1.0` | yes | none |
+| `official_q25` | Avoid unrelated IAM/CloudTrail retrieval for NIST coordination | `1.0` | `1.0` | yes | none |
 
 ## Comparison Context
 
