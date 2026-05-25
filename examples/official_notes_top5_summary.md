@@ -11,6 +11,7 @@ It is included so reviewers can see the report shape without running OpenAI call
 ## Summary
 
 - Experiment: `official_notes_top5`
+- Run basis: 25-question eval run from `2026-05-25`
 - Source set: concise official-source notes for AWS IAM, AWS CloudTrail, and NIST SP 800-61 Rev. 3
 - Eval set: `data/eval_sets/cloudsec_official_notes_eval_v1.jsonl`
 - Questions: `25`
