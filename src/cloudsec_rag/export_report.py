@@ -54,7 +54,10 @@ def per_question_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
                 "latency_ms": item.get("latency_ms", 0.0),
                 "answer_latency_ms": item.get("answer_latency_ms", 0.0),
                 "expected_doc_ids": ", ".join(item.get("expected_doc_ids", [])),
+                "avoided_doc_ids": ", ".join(item.get("avoided_doc_ids", [])),
                 "retrieved_doc_ids": ", ".join(item.get("retrieved_doc_ids", [])),
+                "avoided_doc_ids_found": ", ".join(item.get("avoided_doc_ids_found", [])),
+                "avoided_doc_ids_pass": item.get("avoided_doc_ids_pass", ""),
                 "missing_expected_points": "; ".join(answer_eval.get("missing_expected_points") or []),
             }
         )
@@ -121,7 +124,10 @@ def write_csv_report(report: dict[str, Any], output_path: Path) -> None:
         "latency_ms",
         "answer_latency_ms",
         "expected_doc_ids",
+        "avoided_doc_ids",
         "retrieved_doc_ids",
+        "avoided_doc_ids_found",
+        "avoided_doc_ids_pass",
         "missing_expected_points",
     ]
     with output_path.open("w", encoding="utf-8", newline="") as handle:

@@ -22,7 +22,10 @@ def sample_report() -> dict:
                 "question_id": "q1",
                 "question": "What helps least privilege?",
                 "expected_doc_ids": ["iam"],
+                "avoided_doc_ids": [],
                 "retrieved_doc_ids": ["iam", "logs"],
+                "avoided_doc_ids_found": [],
+                "avoided_doc_ids_pass": True,
                 "recall_at_k": 1.0,
                 "latency_ms": 100.0,
                 "answer_latency_ms": 400.0,
@@ -70,7 +73,10 @@ def test_export_report_writes_markdown_and_csv(tmp_path):
               "question_id": "q1",
               "question": "What helps least privilege?",
               "expected_doc_ids": ["iam"],
+              "avoided_doc_ids": [],
               "retrieved_doc_ids": ["iam"],
+              "avoided_doc_ids_found": [],
+              "avoided_doc_ids_pass": true,
               "recall_at_k": 1.0,
               "latency_ms": 100.0,
               "answer_latency_ms": 400.0,
@@ -93,3 +99,4 @@ def test_export_report_writes_markdown_and_csv(tmp_path):
     with csv_path.open("r", encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))
     assert rows[0]["question_id"] == "q1"
+    assert "avoided_doc_ids_pass" in rows[0]

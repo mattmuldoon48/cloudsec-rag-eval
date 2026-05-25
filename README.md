@@ -20,9 +20,18 @@ Production-style local RAG evaluation system for cloud security guidance. This p
 
 Production RAG is more than a chat interface over documents. It needs evidence-aware retrieval, grounded generation, and repeatable evals so changes to chunking, retrieval depth, prompts, and models can be measured instead of guessed. This repo focuses on that evaluation loop.
 
-## Current Results
+## Eval Coverage
 
-The current official-source-notes eval uses concise local notes derived from AWS IAM, AWS CloudTrail, and NIST SP 800-61 Rev. 3 sources. These are small starter evals, not broad benchmark claims.
+The current official-source-notes eval uses concise local notes derived from AWS IAM, AWS CloudTrail, and NIST SP 800-61 Rev. 3 sources. The eval set now includes `25` questions across:
+
+- single-source retrieval
+- multi-source retrieval
+- ambiguous cloud security questions
+- not-enough-information questions
+- IAM plus CloudTrail questions
+- questions with `avoided_doc_ids` to check that retrieval does not pull unrelated docs
+
+The measured results below are from the previous 8-question version of the eval set. They are retained as an example comparison snapshot, not as current 25-question benchmark results.
 
 | Experiment | Top-k | Questions | Recall@k | Faithfulness | Avg latency ms | Est. cost USD |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -173,6 +182,7 @@ Each JSON report includes:
 - `average_latency_ms`
 - `estimated_cost_usd`
 - per-question retrieved doc IDs
+- avoided doc IDs and whether any were retrieved
 - generated answer text
 - citation checks
 - missing expected answer points

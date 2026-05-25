@@ -38,6 +38,7 @@ class EvalQuestion(BaseModel):
     question: str
     expected_doc_ids: List[str]
     expected_answer_points: List[str] = Field(default_factory=list)
+    avoided_doc_ids: List[str] = Field(default_factory=list)
 
 
 class GeneratedAnswer(BaseModel):

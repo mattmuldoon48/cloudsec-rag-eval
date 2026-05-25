@@ -53,6 +53,7 @@ def evaluate_retrieval(settings: Settings | None = None) -> EvalRunResult:
 
         retrieved_doc_ids = [chunk.doc_id for chunk in retrieved_chunks]
         question_recall = recall_at_k(retrieved_doc_ids, question.expected_doc_ids)
+        avoided_doc_ids_found = sorted(set(retrieved_doc_ids).intersection(question.avoided_doc_ids))
 
         answer_start = time.perf_counter()
         generated_answer = generate_answer(
@@ -82,8 +83,11 @@ def evaluate_retrieval(settings: Settings | None = None) -> EvalRunResult:
                 "question_id": question.id,
                 "question": question.question,
                 "expected_doc_ids": question.expected_doc_ids,
+                "avoided_doc_ids": question.avoided_doc_ids,
                 "retrieved_doc_ids": retrieved_doc_ids,
                 "recall_at_k": question_recall,
+                "avoided_doc_ids_found": avoided_doc_ids_found,
+                "avoided_doc_ids_pass": not avoided_doc_ids_found,
                 "latency_ms": round(duration * 1000.0, 2),
                 "answer_latency_ms": round(answer_duration * 1000.0, 2),
                 "answer": generated_answer.answer,

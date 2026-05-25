@@ -33,3 +33,14 @@ def test_chunk_schema_validation():
 def test_eval_question_schema_missing_fields_raises():
     with pytest.raises(ValueError):
         EvalQuestion(id="q1", question="x", expected_doc_ids=None)
+
+
+def test_eval_question_schema_supports_avoided_doc_ids():
+    question = EvalQuestion(
+        id="q1",
+        question="x",
+        expected_doc_ids=["doc1"],
+        avoided_doc_ids=["doc2"],
+    )
+
+    assert question.avoided_doc_ids == ["doc2"]
