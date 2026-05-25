@@ -7,9 +7,9 @@
     "chunk_size": 700,
     "chunk_overlap": 100
   },
-  "retrieval_recall_at_k": 1.0,
+  "retrieval_recall_at_k": 0.9733,
   "average_faithfulness_score": 1.0,
-  "average_latency_ms": 2200.65,
-  "estimated_cost_usd": 0.017195,
+  "average_latency_ms": 2873.9,
+  "estimated_cost_usd": 0.05144,
   "per_question_results": []
 }

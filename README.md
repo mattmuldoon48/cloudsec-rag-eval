@@ -31,14 +31,12 @@ The current official-source-notes eval uses concise local notes derived from AWS
 - IAM plus CloudTrail questions
 - questions with `avoided_doc_ids` to check that retrieval does not pull unrelated docs
 
-The measured results below are from the previous 8-question version of the eval set. They are retained as an example comparison snapshot, not as current 25-question benchmark results.
-
 | Experiment | Top-k | Questions | Recall@k | Faithfulness | Avg latency ms | Est. cost USD |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `official_notes` | `3` | `8` | `0.9375` | `1.0` | `3136.98` | `$0.012721` |
-| `official_notes_top5` | `5` | `8` | `1.0` | `1.0` | `2200.65` | `$0.017195` |
+| `official_notes` | `3` | `25` | `0.9067` | `1.0` | `3401.76` | `$0.036722` |
+| `official_notes_top5` | `5` | `25` | `0.9733` | `1.0` | `2873.9` | `$0.05144` |
 
-The harder multi-document questions exposed a top-3 retrieval miss on a CloudTrail-plus-NIST question. The top-5 experiment recovered the missing source, preserved faithfulness, and passed the regression gate. Estimated cost increased because more retrieved evidence was included. The latency result is useful for this local run but should not be treated as a stable latency benchmark.
+The expanded 25-question eval exposed several harder multi-document retrieval misses. The top-5 experiment improved recall by `0.0666`, preserved average faithfulness, and passed the regression gate. It still missed expected sources on two questions, which is useful signal for future retrieval work. Estimated cost increased because more retrieved evidence was included. The latency result is useful for this local run but should not be treated as a stable latency benchmark.
 
 ## Architecture
 
