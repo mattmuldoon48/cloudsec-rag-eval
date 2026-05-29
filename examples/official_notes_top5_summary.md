@@ -1,6 +1,8 @@
 # Example RAG Evaluation Report: official_notes_top5
 
-This is a sanitized checked-in example of the Markdown report produced by:
+This is a legacy-location copy of the sanitized Markdown report example now documented under `reports/examples/`.
+
+It shows the report shape produced by:
 
 ```bash
 python scripts/export_report.py reports/runs/run_official_notes_top5_<timestamp>_<run_id>.json
@@ -22,7 +24,7 @@ It is included so reviewers can see the report shape without running OpenAI call
 - Failed retrievals: `2`
 - Missing expected answer points: `7`
 
-These metrics come from a small starter eval set and should be read as a local sanity check, not a broad benchmark claim.
+These metrics come from the small 25-question official-source-notes eval set and should be read as a local sanity check, not a broad benchmark claim.
 
 ## Configuration
 

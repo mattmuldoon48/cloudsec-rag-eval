@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/mattmuldoon48/cloudsec-rag-eval/actions/workflows/ci.yml/badge.svg)](https://github.com/mattmuldoon48/cloudsec-rag-eval/actions/workflows/ci.yml)
 
-Production-style local RAG evaluation system for cloud security guidance. This project demonstrates evaluated retrieval, grounded cited generation, experiment comparison, latency/cost tracking, report exports, and regression gates without adding a web app or deployment layer.
+Local RAG evaluation system for cloud security guidance. This project demonstrates evaluated retrieval, grounded cited generation, experiment comparison, latency/cost tracking, report exports, and regression gates without adding a web app or deployment layer.
 
 ## What This Demonstrates
 
@@ -36,7 +36,7 @@ The current official-source-notes eval uses concise local notes derived from AWS
 | `official_notes` | `3` | `25` | `0.9067` | `1.0` | `3401.76` | `$0.036722` |
 | `official_notes_top5` | `5` | `25` | `0.9733` | `1.0` | `2873.9` | `$0.05144` |
 
-The expanded 25-question eval exposed several harder multi-document retrieval misses. The top-5 experiment improved recall by `0.0666`, preserved average faithfulness, and passed the regression gate. It still missed expected sources on two questions, which is useful signal for future retrieval work. Estimated cost increased because more retrieved evidence was included. The latency result is useful for this local run but should not be treated as a stable latency benchmark.
+The expanded 25-question eval exposed several harder multi-document retrieval misses. The top-5 experiment improved recall by `0.0666`, preserved average faithfulness, and passed the regression gate. It still missed expected sources on two questions, which is useful signal for future retrieval work. Estimated cost increased because more retrieved evidence was included. The latency result is useful for this local run but should not be treated as a stable latency benchmark. These numbers are backed by sanitized checked-in summaries under `reports/examples/`.
 
 ## Architecture
 
@@ -45,20 +45,22 @@ The expanded 25-question eval exposed several harder multi-document retrieval mi
 - `configs/` - named experiment configs for retrieval/chunking/prompt variants
 - `data/raw_docs/` - local markdown source notes
 - `data/doc_manifest.json` - source metadata, including whether docs are official-source notes or synthetic samples
-- `data/eval_sets/` - JSONL eval questions with expected doc IDs and expected answer points
+- `data/eval_sets/` - JSONL eval questions with expected doc IDs, expected answer points, and optional avoided doc IDs
 - `data/processed/` and `data/indexes/` - generated local artifacts, ignored by git
 - `prompts/` - answer-generation and faithfulness-judge prompts
 - `reports/runs/` and `reports/summaries/` - generated JSON, Markdown, and CSV reports, ignored by git
+- `reports/examples/` - sanitized checked-in example reports that support the README metrics
+- `docs/eval_protocol.md` - methodology notes for sources, recall@k, faithfulness scoring, limitations, and expansion
 - `.github/workflows/ci.yml` - CI test run plus regression-gate fixture
 
 ## Data Sources
 
 The repo includes two kinds of local docs:
 
-- Synthetic starter docs, clearly marked as non-official
-- Concise official-source notes based on public AWS and NIST pages
+- Synthetic starter docs, clearly marked as non-official. These support the starter eval set and should not be treated as AWS, NIST, or production guidance.
+- Concise official-source notes based on public AWS and NIST pages. These support the current 25-question README metrics.
 
-The official-source notes are intentionally short local summaries with source URLs, not full copies of upstream documentation.
+The official-source notes are intentionally short local summaries with source URLs, not full copies of upstream documentation. See `docs/eval_protocol.md` for the full eval methodology and limitations.
 
 Official-source note references:
 - AWS IAM best practices: https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html
@@ -72,7 +74,7 @@ Official-source note references:
 Create a virtual environment with Python 3.11+:
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e .
@@ -91,7 +93,7 @@ Copy the example environment file:
 cp .env.example .env
 ```
 
-Set your OpenAI API key in `.env`:
+Set your OpenAI API key in `.env`. The model names shown in `.env.example` match the checked-in configs:
 
 ```bash
 OPENAI_API_KEY=
@@ -113,7 +115,7 @@ Ask a cited question:
 python scripts/ask.py "How can IAM least privilege and CloudTrail auditing work together to reduce cloud security risk?" --config configs/official_notes.json
 ```
 
-Run the baseline eval:
+Run the official-source eval:
 
 ```bash
 python scripts/run_eval.py --config configs/official_notes.json
@@ -144,7 +146,7 @@ Export a report:
 python scripts/export_report.py reports/runs/run_official_notes_<timestamp>_<run_id>.json
 ```
 
-A sanitized checked-in example is available at `examples/official_notes_top5_summary.md`.
+Sanitized checked-in examples are available under `reports/examples/`. A legacy copy of the top-5 Markdown summary remains at `examples/official_notes_top5_summary.md` for portfolio links.
 
 ## Adding Docs
 
@@ -186,7 +188,7 @@ Each JSON report includes:
 - missing expected answer points
 - judge rationale and unsupported-claim notes
 
-Exported summaries include a compact Markdown overview and a per-question CSV.
+Exported summaries include a compact Markdown overview and a per-question CSV. The committed examples in `reports/examples/` are sanitized summaries; generated full reports remain local by default.
 
 ## Regression Gates
 
