@@ -146,7 +146,7 @@ Export a report:
 python scripts/export_report.py reports/runs/run_official_notes_<timestamp>_<run_id>.json
 ```
 
-Sanitized checked-in examples are available under `reports/examples/`. A legacy copy of the top-5 Markdown summary remains at `examples/official_notes_top5_summary.md` for portfolio links.
+Sanitized checked-in examples are available under `reports/examples/`, including the current top-5 summary at `reports/examples/official_notes_top5_2026-05-25_summary.md`.
 
 ## Adding Docs
 
