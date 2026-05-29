@@ -15,9 +15,5 @@ reports/summaries/*
 !reports/summaries/.gitkeep
 !reports/examples/
 !reports/examples/*.md
-# Private interview prep notes.
-docs/interview_notes.md
-docs/interview_walkthrough.md
-
 .DS_Store
 .pytest_cache/
