@@ -1,5 +1,7 @@
 __pycache__/
 *.py[cod]
+
+# Local secrets. Keep the example template tracked.
 .env
 .env.*
 !.env.example
@@ -11,5 +13,7 @@ reports/runs/*
 !reports/runs/.gitkeep
 reports/summaries/*
 !reports/summaries/.gitkeep
+!reports/examples/
+!reports/examples/*.md
 .DS_Store
 .pytest_cache/
