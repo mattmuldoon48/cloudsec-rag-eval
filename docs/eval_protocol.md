@@ -46,11 +46,11 @@ matched expected_doc_ids / total expected_doc_ids
 
 A question expecting one document scores `1.0` if that document appears in any retrieved chunk and `0.0` otherwise. A question expecting three documents scores `0.6667` when two of the three expected document IDs appear in the retrieved chunks. The run-level `retrieval_recall_at_k` is the average of per-question recall values.
 
-`avoided_doc_ids` are reported separately. They do not change recall@k; they identify cases where retrieval pulled documents the eval author expected to be unrelated for that question.
+`avoided_doc_ids` are reported separately as a retrieval-noise diagnostic. They do not change recall@k and are not part of the regression gate; they identify cases where retrieval pulled documents the eval author expected to be unrelated for that question.
 
 ## Faithfulness judging
 
-For each question, the pipeline generates an answer from retrieved evidence and sends the question, answer, and evidence to the faithfulness judge prompt in `prompts/faithfulness_judge_v1.txt`.
+For each question, the pipeline generates an answer from retrieved evidence and sends the question, answer, and evidence to the faithfulness judge prompt in `prompts/faithfulness_judge_v1.txt`. This is an LLM-as-judge score, so it should be read as a structured review signal rather than an authoritative ground-truth label.
 
 The judge returns structured JSON with:
 
@@ -61,6 +61,15 @@ The judge returns structured JSON with:
 
 The reported `average_faithfulness_score` is the average judge score across questions. Citation presence and citation-number validity are checked separately in code. Expected answer points are checked with lightweight keyword overlap, so missing-point counts are a heuristic review aid rather than a semantic grading system.
 
+## Latency and cost reporting
+
+Latency and estimated cost are included to make experiment tradeoffs visible, not to claim production performance.
+
+- `latency_ms` measures retrieval time for a question.
+- `answer_latency_ms` measures answer generation plus faithfulness judging for a question.
+- `average_latency_ms` averages those recorded phase timings across the run; it is not p95 latency and not a production service SLO.
+- `estimated_cost_usd` is calculated from approximate token assumptions in `src/cloudsec_rag/metrics.py`; it is not provider billing data.
+
 ## Limitations of the 25-question eval
 
 The current eval is a small local sanity check, not a broad benchmark:
@@ -70,7 +79,8 @@ The current eval is a small local sanity check, not a broad benchmark:
 - the 25 questions were written for this repository and are not an external benchmark
 - faithfulness is model-judged and can miss or overstate issues
 - expected-answer-point matching is keyword based
-- latency and estimated cost are local run observations, not stable performance claims
+- avoided-doc checks are diagnostic and do not replace a precision metric
+- latency and estimated cost are local run observations, not stable performance claims or billing records
 - higher top-k can improve recall while increasing prompt context and estimated cost
 
 The checked-in example reports prove only that those specific local runs produced the recorded metrics with the checked-in config and eval set.

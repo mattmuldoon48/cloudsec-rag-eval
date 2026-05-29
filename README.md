@@ -36,7 +36,7 @@ The current official-source-notes eval uses concise local notes derived from AWS
 | `official_notes` | `3` | `25` | `0.9067` | `1.0` | `3401.76` | `$0.036722` |
 | `official_notes_top5` | `5` | `25` | `0.9733` | `1.0` | `2873.9` | `$0.05144` |
 
-The expanded 25-question eval exposed several harder multi-document retrieval misses. The top-5 experiment improved recall by `0.0666`, preserved average faithfulness, and passed the regression gate. It still missed expected sources on two questions, which is useful signal for future retrieval work. Estimated cost increased because more retrieved evidence was included. The latency result is useful for this local run but should not be treated as a stable latency benchmark. These numbers are backed by sanitized checked-in summaries under `reports/examples/`.
+The expanded 25-question eval exposed several harder multi-document retrieval misses. The top-5 experiment improved recall by `0.0666`, preserved average faithfulness, and passed the regression gate. It still missed expected sources on two questions, which is useful signal for future retrieval work. Estimated cost increased because more retrieved evidence was included. The latency result is useful for this local run but should not be treated as a stable latency benchmark. The latency column is a local phase-timing average, and the cost column is an approximate estimate, not provider billing data. These numbers are backed by sanitized checked-in summaries under `reports/examples/`.
 
 ## Architecture
 
@@ -208,14 +208,10 @@ CI runs pytest plus a regression-gate fixture so the comparison mechanism is exe
 
 ## Tests
 
+Run the current test suite with:
+
 ```bash
 python -m pytest
-```
-
-Current local status:
-
-```text
-19 passed
 ```
 
 ## Roadmap
