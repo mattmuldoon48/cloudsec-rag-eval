@@ -115,6 +115,8 @@ Ask a cited question:
 python scripts/ask.py "How can IAM least privilege and CloudTrail auditing work together to reduce cloud security risk?" --config configs/official_notes.json
 ```
 
+A good cited answer should stay inside the retrieved evidence, cite the source notes it used, and say when the local corpus is insufficient. Treat uncited operational advice as a review finding, not as validated guidance.
+
 Run the official-source eval:
 
 ```bash
