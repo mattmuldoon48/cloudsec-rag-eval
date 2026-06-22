@@ -85,6 +85,10 @@ The current eval is a small local sanity check, not a broad benchmark:
 
 The checked-in example reports prove only that those specific local runs produced the recorded metrics with the checked-in config and eval set.
 
+## Report review checklist
+
+When reviewing a run, check recall misses before prompt wording: a faithful answer cannot cite evidence that retrieval failed to return. Then inspect unsupported claims, missing expected answer points, avoided-doc hits, and the estimated-cost delta for the selected top-k setting.
+
 ## Expanding the eval set
 
 To expand coverage without weakening credibility:
