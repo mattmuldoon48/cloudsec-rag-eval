@@ -24,6 +24,8 @@ The official-source experiments use:
 
 `official_notes` retrieves the top 3 chunks. `official_notes_top5` retrieves the top 5 chunks. The index is generated locally under `data/indexes/`, which is ignored by git.
 
+Compare retrieval experiments only when the saved index and eval config describe the same source set, chunking settings, prompt paths, and eval set. If any of those inputs change, treat the result as a new experiment rather than attributing the delta only to top-k.
+
 ## Eval set design
 
 The current official-source-notes eval set has 25 questions:
