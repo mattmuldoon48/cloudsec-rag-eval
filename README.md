@@ -177,6 +177,8 @@ python scripts/ingest_docs.py
 
 The loader skips `data/raw_docs/README.md` so folder instructions do not become retrieval evidence.
 
+Rebuild each affected experiment index after changing raw docs, manifest metadata, chunk size, or chunk overlap. `ask.py` and `run_eval.py` read from the configured `data/indexes/` directory, so ingestion alone does not update the vectors used by demos or evals.
+
 ## Eval Report Contents
 
 Each JSON report includes:
