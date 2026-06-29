@@ -152,6 +152,8 @@ python scripts/export_report.py reports/runs/run_official_notes_<timestamp>_<run
 
 Sanitized checked-in examples are available under `reports/examples/`, including the current top-5 summary at `reports/examples/official_notes_top5_2026-05-25_summary.md`.
 
+Keep checked-in examples tied to exported summaries from completed local runs. Before replacing one, verify the config name, eval set, top-k, and timestamp match the README metrics it supports.
+
 ## Adding Docs
 
 Place markdown or text files in `data/raw_docs/`, then add metadata to `data/doc_manifest.json`.
