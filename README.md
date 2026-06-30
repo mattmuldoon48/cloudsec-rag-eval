@@ -123,7 +123,7 @@ Run the official-source eval:
 python scripts/run_eval.py --config configs/official_notes.json
 ```
 
-The eval command writes a timestamped JSON report under `reports/runs/` and prints aggregate retrieval, faithfulness, latency, and estimated-cost metrics. Generated full reports stay local; only sanitized examples should be committed.
+The eval command writes a timestamped JSON report under `reports/runs/` and prints the saved report path; review aggregate retrieval, faithfulness, latency, and estimated-cost metrics in that JSON or in exported summaries. Generated full reports stay local; only sanitized examples should be committed.
 
 Run the top-5 retrieval experiment:
 
