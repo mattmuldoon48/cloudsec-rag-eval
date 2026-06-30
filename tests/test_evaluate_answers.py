@@ -61,6 +61,38 @@ def test_citation_coverage_rejects_out_of_range_citations():
     assert citation_coverage(answer) == 0.0
 
 
+def test_citation_coverage_scores_mixed_valid_and_out_of_range_citations():
+    answer = GeneratedAnswer(
+        question_id="q1",
+        question="What helps least privilege?",
+        answer="Use fine-grained policies [1]. Review unused access [3].",
+        citations=[],
+        retrieved_chunks=[
+            RetrievedChunk(
+                chunk_id="doc1-0",
+                doc_id="doc1",
+                title="Doc 1",
+                source_path="doc1.md",
+                chunk_index=0,
+                text="Use fine-grained policies.",
+                score=0.9,
+            ),
+            RetrievedChunk(
+                chunk_id="doc2-0",
+                doc_id="doc2",
+                title="Doc 2",
+                source_path="doc2.md",
+                chunk_index=0,
+                text="Review unused access.",
+                score=0.8,
+            ),
+        ],
+    )
+
+    assert answer_has_citations(answer)
+    assert citation_coverage(answer) == 0.5
+
+
 def test_answer_without_citations_has_zero_citation_coverage():
     answer = GeneratedAnswer(
         question_id="q1",
