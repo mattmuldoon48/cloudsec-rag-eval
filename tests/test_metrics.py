@@ -1,3 +1,5 @@
+import pytest
+
 from cloudsec_rag.metrics import average_latency_ms, estimate_cost_usd, recall_at_k
 
 
@@ -21,3 +23,7 @@ def test_retrieval_recall_returns_zero_without_expected_docs():
 
 def test_average_latency_returns_zero_without_samples():
     assert average_latency_ms([]) == 0.0
+
+
+def test_average_latency_converts_seconds_to_milliseconds():
+    assert average_latency_ms([0.1, 0.2, 0.3]) == pytest.approx(200.0)
