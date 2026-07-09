@@ -27,3 +27,7 @@ def test_average_latency_returns_zero_without_samples():
 
 def test_average_latency_converts_seconds_to_milliseconds():
     assert average_latency_ms([0.1, 0.2, 0.3]) == pytest.approx(200.0)
+
+
+def test_estimate_cost_rounds_embedding_and_generation_costs():
+    assert estimate_cost_usd(num_embeddings=25, num_generation_tokens=1234) == 0.002478
