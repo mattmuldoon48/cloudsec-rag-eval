@@ -1,4 +1,4 @@
-from cloudsec_rag.metrics import recall_at_k
+from cloudsec_rag.metrics import average_latency_ms, estimate_cost_usd, recall_at_k
 
 
 def test_retrieval_recall_metric_matches_expected_docs():
@@ -17,3 +17,7 @@ def test_retrieval_recall_ignores_duplicate_retrieved_docs():
 
 def test_retrieval_recall_returns_zero_without_expected_docs():
     assert recall_at_k(["iam"], []) == 0.0
+
+
+def test_average_latency_returns_zero_without_samples():
+    assert average_latency_ms([]) == 0.0
