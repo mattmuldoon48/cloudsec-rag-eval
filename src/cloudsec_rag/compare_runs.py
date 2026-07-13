@@ -1,8 +1,31 @@
 from __future__ import annotations
 
 import json
+import math
+from numbers import Real
 from pathlib import Path
 from typing import Any
+
+
+def _validated_metrics(data: Any, side: str, path: Path) -> dict[str, Real]:
+    metrics: dict[str, Real] = {}
+    for field in (
+        "retrieval_recall_at_k",
+        "average_faithfulness_score",
+        "average_latency_ms",
+    ):
+        value = data.get(field) if isinstance(data, dict) else None
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, Real)
+            or (isinstance(value, float) and not math.isfinite(value))
+        ):
+            raise ValueError(
+                f"{side} report {str(path)!r} has invalid field {field!r}; "
+                "expected a finite real number"
+            )
+        metrics[field] = value
+    return metrics
 
 
 def compare_run_files(left: Path, right: Path) -> dict:
@@ -11,23 +34,38 @@ def compare_run_files(left: Path, right: Path) -> dict:
     with right.open("r", encoding="utf-8") as handle:
         right_data = json.load(handle)
 
+    left_metrics = _validated_metrics(left_data, "left", left)
+    right_metrics = _validated_metrics(right_data, "right", right)
+
     return {
         "left": {
             "path": str(left),
-            "retrieval_recall_at_k": left_data.get("retrieval_recall_at_k"),
-            "average_faithfulness_score": left_data.get("average_faithfulness_score"),
-            "average_latency_ms": left_data.get("average_latency_ms"),
+            "retrieval_recall_at_k": left_metrics["retrieval_recall_at_k"],
+            "average_faithfulness_score": left_metrics["average_faithfulness_score"],
+            "average_latency_ms": left_metrics["average_latency_ms"],
         },
         "right": {
             "path": str(right),
-            "retrieval_recall_at_k": right_data.get("retrieval_recall_at_k"),
-            "average_faithfulness_score": right_data.get("average_faithfulness_score"),
-            "average_latency_ms": right_data.get("average_latency_ms"),
+            "retrieval_recall_at_k": right_metrics["retrieval_recall_at_k"],
+            "average_faithfulness_score": right_metrics["average_faithfulness_score"],
+            "average_latency_ms": right_metrics["average_latency_ms"],
         },
         "delta": {
-            "recall_diff": round((right_data.get("retrieval_recall_at_k") or 0) - (left_data.get("retrieval_recall_at_k") or 0), 4),
-            "faithfulness_diff": round((right_data.get("average_faithfulness_score") or 0) - (left_data.get("average_faithfulness_score") or 0), 4),
-            "latency_diff_ms": round((right_data.get("average_latency_ms") or 0) - (left_data.get("average_latency_ms") or 0), 2),
+            "recall_diff": round(
+                right_metrics["retrieval_recall_at_k"]
+                - left_metrics["retrieval_recall_at_k"],
+                4,
+            ),
+            "faithfulness_diff": round(
+                right_metrics["average_faithfulness_score"]
+                - left_metrics["average_faithfulness_score"],
+                4,
+            ),
+            "latency_diff_ms": round(
+                right_metrics["average_latency_ms"]
+                - left_metrics["average_latency_ms"],
+                2,
+            ),
         },
     }
 
