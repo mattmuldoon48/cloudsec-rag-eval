@@ -23,6 +23,8 @@ def load_eval_questions(eval_path: Path) -> List[EvalQuestion]:
             if not line.strip():
                 continue
             questions.append(EvalQuestion.model_validate_json(line))
+    if not questions:
+        raise ValueError(f"Eval set contains no nonblank questions: {eval_path}")
     return questions
 
 
