@@ -41,9 +41,34 @@ def load_embeddings(index_dir: Path) -> np.ndarray:
     return np.load(embeddings_path)
 
 
+def _validate_index_artifacts(index_dir: Path, chunks: List[Chunk], embeddings: np.ndarray) -> None:
+    if not chunks:
+        raise ValueError(
+            f"Invalid index artifacts in {index_dir}: chunks.jsonl contains 0 chunks"
+        )
+
+    if (
+        embeddings.ndim != 2
+        or embeddings.size == 0
+        or not np.issubdtype(embeddings.dtype, np.number)
+    ):
+        raise ValueError(
+            f"Invalid index artifacts in {index_dir}: embeddings.npy must be a nonempty 2-D "
+            f"numeric array; observed shape={embeddings.shape}, dtype={embeddings.dtype}"
+        )
+
+    if embeddings.shape[0] != len(chunks):
+        raise ValueError(
+            f"Invalid index artifacts in {index_dir}: embeddings.npy row count "
+            f"{embeddings.shape[0]} does not match chunks.jsonl count {len(chunks)} "
+            f"(observed shape={embeddings.shape})"
+        )
+
+
 def load_index(index_dir: Path) -> tuple[List[Chunk], np.ndarray, dict]:
     chunks = load_chunks(index_dir)
     embeddings = load_embeddings(index_dir)
+    _validate_index_artifacts(index_dir, chunks, embeddings)
     config_path = index_dir / "index_config.json"
     with config_path.open("r", encoding="utf-8") as handle:
         config = json.load(handle)
