@@ -4,6 +4,8 @@ import json
 import re
 from typing import List
 
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
+
 from .generate import build_evidence_section
 from .llm_client import LLMClient
 from .schemas import EvalQuestion, GeneratedAnswer
@@ -78,6 +80,38 @@ def _point_is_covered(point: str, answer_terms: set[str]) -> bool:
     return len(overlap) / len(point_terms) >= 0.5
 
 
+class _FaithfulnessJudgment(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    faithfulness_score: int | float = Field(
+        ge=0.0,
+        le=1.0,
+        allow_inf_nan=False,
+    )
+    is_faithful: bool
+    unsupported_claims: list[str]
+    rationale: str
+
+
+def _invalid_faithfulness_judgment(raw_judgment: str) -> dict:
+    return {
+        "faithfulness_score": 0.0,
+        "is_faithful": False,
+        "unsupported_claims": ["Judge did not return valid JSON."],
+        "rationale": raw_judgment.strip(),
+    }
+
+
+def _parse_faithfulness_judgment(raw_judgment: str) -> dict:
+    try:
+        parsed = _extract_json_object(raw_judgment)
+        judgment = _FaithfulnessJudgment.model_validate(parsed)
+    except (json.JSONDecodeError, ValidationError):
+        return _invalid_faithfulness_judgment(raw_judgment)
+
+    return judgment.model_dump()
+
+
 def _extract_json_object(text: str) -> dict:
     try:
         return json.loads(text)
@@ -102,23 +136,7 @@ def judge_faithfulness(
     )
     raw_judgment = llm_client.generate_text(prompt, max_tokens=300, temperature=0.0)
 
-    try:
-        parsed = _extract_json_object(raw_judgment)
-    except json.JSONDecodeError:
-        return {
-            "faithfulness_score": 0.0,
-            "is_faithful": False,
-            "unsupported_claims": ["Judge did not return valid JSON."],
-            "rationale": raw_judgment.strip(),
-        }
-
-    score = float(parsed.get("faithfulness_score", 0.0))
-    return {
-        "faithfulness_score": max(0.0, min(score, 1.0)),
-        "is_faithful": bool(parsed.get("is_faithful", False)),
-        "unsupported_claims": list(parsed.get("unsupported_claims", [])),
-        "rationale": str(parsed.get("rationale", "")),
-    }
+    return _parse_faithfulness_judgment(raw_judgment)
 
 
 def evaluate_generated_answer(
