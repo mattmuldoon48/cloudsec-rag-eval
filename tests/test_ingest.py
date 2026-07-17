@@ -1,4 +1,6 @@
-from cloudsec_rag.ingest import load_raw_documents
+import pytest
+
+from cloudsec_rag.ingest import load_doc_manifest, load_raw_documents
 
 
 def test_load_raw_documents_applies_manifest_metadata(tmp_path):
@@ -44,3 +46,21 @@ def test_load_raw_documents_skips_readme(tmp_path):
     documents = load_raw_documents(raw_dir)
 
     assert [document.doc_id for document in documents] == ["doc"]
+
+
+def test_load_doc_manifest_rejects_duplicate_document_ids(tmp_path):
+    manifest_path = tmp_path / "doc_manifest.json"
+    manifest_path.write_text(
+        """
+        {
+          "documents": [
+            {"doc_id": "duplicate", "title": "First"},
+            {"doc_id": "duplicate", "title": "Second"}
+          ]
+        }
+        """,
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="Duplicate document ID in manifest: duplicate"):
+        load_doc_manifest(manifest_path)

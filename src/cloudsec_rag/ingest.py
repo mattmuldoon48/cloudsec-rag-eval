@@ -15,7 +15,13 @@ def load_doc_manifest(manifest_path: Path) -> dict[str, dict]:
     with manifest_path.open("r", encoding="utf-8") as handle:
         data = json.load(handle)
     documents = data.get("documents", [])
-    return {item["doc_id"]: item for item in documents}
+    manifest: dict[str, dict] = {}
+    for item in documents:
+        doc_id = item["doc_id"]
+        if doc_id in manifest:
+            raise ValueError(f"Duplicate document ID in manifest: {doc_id}")
+        manifest[doc_id] = item
+    return manifest
 
 
 def load_raw_documents(raw_dir: Path, manifest_path: Path | None = None) -> List[Document]:
