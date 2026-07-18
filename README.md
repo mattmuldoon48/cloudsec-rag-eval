@@ -125,6 +125,8 @@ The CLI prints the answer first, then the retrieved source list used for citatio
 [1] data/raw_docs/aws_iam_official_notes.md (score=0.812)
 ```
 
+The source `score` is cosine similarity (`1 - cosine distance`) between the query and each retrieved chunk. Use it to rank evidence within the same index and embedding model; it is not calibrated confidence and should not be compared across experiments with different embedding models.
+
 A good cited answer should stay inside the retrieved evidence, cite the source notes it used, and say when the local corpus is insufficient. Treat uncited operational advice as a review finding, not as validated guidance.
 
 Run the official-source eval:
