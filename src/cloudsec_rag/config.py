@@ -12,7 +12,7 @@ class ExperimentConfig(BaseModel):
     experiment_name: str = "default"
     chunk_size: int | None = None
     chunk_overlap: int | None = None
-    top_k: int | None = None
+    top_k: int | None = Field(default=None, gt=0)
     indexes_dir: Path | None = None
     eval_set_path: Path | None = None
     answer_prompt_path: Path | None = None
@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     experiment_name: str = "default"
     chunk_size: int = 700
     chunk_overlap: int = 100
-    top_k: int = 3
+    top_k: int = Field(default=3, gt=0)
     raw_docs_dir: Path = Path("data/raw_docs")
     doc_manifest_path: Path = Path("data/doc_manifest.json")
     processed_dir: Path = Path("data/processed")
