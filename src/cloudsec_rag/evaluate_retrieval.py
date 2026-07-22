@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import time
 import uuid
 from pathlib import Path
@@ -18,11 +17,19 @@ from .schemas import EvalQuestion, EvalRunResult
 
 def load_eval_questions(eval_path: Path) -> List[EvalQuestion]:
     questions: list[EvalQuestion] = []
+    seen_ids: set[str] = set()
     with eval_path.open("r", encoding="utf-8") as handle:
-        for line in handle:
+        for line_number, line in enumerate(handle, start=1):
             if not line.strip():
                 continue
-            questions.append(EvalQuestion.model_validate_json(line))
+            question = EvalQuestion.model_validate_json(line)
+            if question.id in seen_ids:
+                raise ValueError(
+                    f"Duplicate eval question ID {question.id!r} at line "
+                    f"{line_number}: {eval_path}"
+                )
+            seen_ids.add(question.id)
+            questions.append(question)
     if not questions:
         raise ValueError(f"Eval set contains no nonblank questions: {eval_path}")
     return questions
