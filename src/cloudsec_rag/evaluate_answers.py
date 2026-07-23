@@ -116,11 +116,17 @@ def _extract_json_object(text: str) -> dict:
     try:
         return json.loads(text)
     except json.JSONDecodeError:
-        start = text.find("{")
-        end = text.rfind("}")
-        if start == -1 or end == -1 or end <= start:
-            raise
-        return json.loads(text[start : end + 1])
+        decoder = json.JSONDecoder()
+        for start, character in enumerate(text):
+            if character != "{":
+                continue
+            try:
+                value, _end = decoder.raw_decode(text, start)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(value, dict):
+                return value
+        raise json.JSONDecodeError("Could not find JSON object", text, 0)
 
 
 def judge_faithfulness(

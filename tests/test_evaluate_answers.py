@@ -34,6 +34,12 @@ def test_faithfulness_judgment_preserves_valid_payload():
     assert _parse_faithfulness_judgment(raw_judgment) == _VALID_JUDGMENT
 
 
+def test_faithfulness_judgment_uses_first_complete_json_object():
+    raw_judgment = f"Result: {json.dumps(_VALID_JUDGMENT)} trailing {{note}}"
+
+    assert _parse_faithfulness_judgment(raw_judgment) == _VALID_JUDGMENT
+
+
 @pytest.mark.parametrize(
     "raw_judgment",
     [
