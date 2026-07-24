@@ -28,6 +28,7 @@ def load_raw_documents(raw_dir: Path, manifest_path: Path | None = None) -> List
     raw_dir = raw_dir.expanduser()
     manifest = load_doc_manifest(manifest_path) if manifest_path else {}
     documents: list[Document] = []
+    seen_doc_ids: set[str] = set()
 
     source_paths = sorted(raw_dir.glob("*.md")) + sorted(raw_dir.glob("*.txt"))
     for path in source_paths:
@@ -37,6 +38,9 @@ def load_raw_documents(raw_dir: Path, manifest_path: Path | None = None) -> List
         if not text:
             continue
         doc_id = path.stem
+        if doc_id in seen_doc_ids:
+            raise ValueError(f"Duplicate document ID derived from source files: {doc_id}")
+        seen_doc_ids.add(doc_id)
         metadata = manifest.get(doc_id, {})
         title = text.splitlines()[0].strip("# ") if text else doc_id
         documents.append(

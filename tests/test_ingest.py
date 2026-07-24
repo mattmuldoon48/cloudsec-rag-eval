@@ -64,3 +64,16 @@ def test_load_doc_manifest_rejects_duplicate_document_ids(tmp_path):
 
     with pytest.raises(ValueError, match="Duplicate document ID in manifest: duplicate"):
         load_doc_manifest(manifest_path)
+
+
+def test_load_raw_documents_rejects_duplicate_derived_ids(tmp_path):
+    raw_dir = tmp_path / "raw_docs"
+    raw_dir.mkdir()
+    (raw_dir / "duplicate.md").write_text("# Markdown source", encoding="utf-8")
+    (raw_dir / "duplicate.txt").write_text("Text source", encoding="utf-8")
+
+    with pytest.raises(
+        ValueError,
+        match="Duplicate document ID derived from source files: duplicate",
+    ):
+        load_raw_documents(raw_dir)
