@@ -36,7 +36,7 @@ class RetrievedChunk(Chunk):
 class EvalQuestion(BaseModel):
     id: str
     question: str
-    expected_doc_ids: List[str]
+    expected_doc_ids: List[str] = Field(min_length=1)
     expected_answer_points: List[str] = Field(default_factory=list)
     avoided_doc_ids: List[str] = Field(default_factory=list)
 

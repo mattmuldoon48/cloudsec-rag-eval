@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 from cloudsec_rag.evaluate_retrieval import load_eval_questions
 
@@ -39,3 +40,14 @@ def test_duplicate_eval_question_ids_are_rejected(tmp_path):
 
     assert "line 2" in str(exc_info.value)
     assert str(eval_path) in str(exc_info.value)
+
+
+def test_eval_questions_require_expected_documents(tmp_path):
+    eval_path = tmp_path / "missing_expected_docs.jsonl"
+    eval_path.write_text(
+        '{"id":"q1","question":"What?","expected_doc_ids":[]}\n',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValidationError, match="expected_doc_ids"):
+        load_eval_questions(eval_path)
