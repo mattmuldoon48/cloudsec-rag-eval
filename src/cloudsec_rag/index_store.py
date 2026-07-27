@@ -56,6 +56,12 @@ def _validate_index_artifacts(index_dir: Path, chunks: List[Chunk], embeddings: 
             f"Invalid index artifacts in {index_dir}: embeddings.npy must be a nonempty 2-D "
             f"numeric array; observed shape={embeddings.shape}, dtype={embeddings.dtype}"
         )
+    if not np.isfinite(embeddings).all():
+        raise ValueError(
+            f"Invalid index artifacts in {index_dir}: embeddings.npy must contain only "
+            f"finite values; observed shape={embeddings.shape}, dtype={embeddings.dtype}"
+        )
+
 
     if embeddings.shape[0] != len(chunks):
         raise ValueError(

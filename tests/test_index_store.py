@@ -100,3 +100,20 @@ def test_load_index_rejects_non_numeric_embeddings(tmp_path):
     assert str(index_dir) in message
     assert "embeddings.npy must be a nonempty 2-D numeric array" in message
     assert "dtype=<U12" in message
+
+
+@pytest.mark.parametrize("invalid_value", [float("nan"), float("inf"), float("-inf")])
+def test_load_index_rejects_non_finite_embeddings(tmp_path, invalid_value):
+    index_dir = tmp_path / "index"
+    _save_artifacts(
+        index_dir,
+        [_chunk(0)],
+        np.array([[invalid_value, 0.1]], dtype=np.float32),
+    )
+
+    with pytest.raises(ValueError) as exc_info:
+        load_index(index_dir)
+
+    message = str(exc_info.value)
+    assert str(index_dir) in message
+    assert "embeddings.npy must contain only finite values" in message
