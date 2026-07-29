@@ -35,3 +35,11 @@ def test_load_settings_rejects_non_positive_top_k(tmp_path, top_k):
 
     with pytest.raises(ValidationError, match="Input should be greater than 0"):
         load_settings(config_path)
+
+
+def test_load_settings_rejects_unknown_experiment_fields(tmp_path):
+    config_path = tmp_path / "experiment.json"
+    config_path.write_text('{"topk": 7}', encoding="utf-8")
+
+    with pytest.raises(ValidationError, match="topk"):
+        load_settings(config_path)

@@ -3,12 +3,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class ExperimentConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     experiment_name: str = "default"
     chunk_size: int | None = None
     chunk_overlap: int | None = None
