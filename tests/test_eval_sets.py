@@ -51,3 +51,17 @@ def test_eval_questions_require_expected_documents(tmp_path):
 
     with pytest.raises(ValidationError, match="expected_doc_ids"):
         load_eval_questions(eval_path)
+
+
+def test_expected_and_avoided_documents_must_not_overlap(tmp_path):
+    eval_path = tmp_path / "contradictory_docs.jsonl"
+    eval_path.write_text(
+        (
+            '{"id":"q1","question":"What?","expected_doc_ids":["doc"],'
+            '"avoided_doc_ids":["doc"]}\n'
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValidationError, match="must not overlap"):
+        load_eval_questions(eval_path)

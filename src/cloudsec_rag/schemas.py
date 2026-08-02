@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class Document(BaseModel):
@@ -39,6 +39,16 @@ class EvalQuestion(BaseModel):
     expected_doc_ids: List[str] = Field(min_length=1)
     expected_answer_points: List[str] = Field(default_factory=list)
     avoided_doc_ids: List[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def expected_and_avoided_documents_must_not_overlap(self) -> "EvalQuestion":
+        overlap = sorted(set(self.expected_doc_ids) & set(self.avoided_doc_ids))
+        if overlap:
+            raise ValueError(
+                "expected_doc_ids and avoided_doc_ids must not overlap: "
+                + ", ".join(overlap)
+            )
+        return self
 
 
 class GeneratedAnswer(BaseModel):
