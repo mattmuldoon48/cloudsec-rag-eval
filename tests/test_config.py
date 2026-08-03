@@ -43,3 +43,37 @@ def test_load_settings_rejects_unknown_experiment_fields(tmp_path):
 
     with pytest.raises(ValidationError, match="topk"):
         load_settings(config_path)
+
+
+@pytest.mark.parametrize(
+    ("chunk_size", "chunk_overlap"),
+    [(0, 0), (100, -1)],
+)
+def test_load_settings_rejects_invalid_chunk_dimensions(
+    tmp_path,
+    chunk_size,
+    chunk_overlap,
+):
+    config_path = tmp_path / "experiment.json"
+    config_path.write_text(
+        f'{{"chunk_size": {chunk_size}, "chunk_overlap": {chunk_overlap}}}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValidationError):
+        load_settings(config_path)
+
+
+@pytest.mark.parametrize("chunk_overlap", [100, 101])
+def test_load_settings_rejects_overlap_not_smaller_than_chunk_size(
+    tmp_path,
+    chunk_overlap,
+):
+    config_path = tmp_path / "experiment.json"
+    config_path.write_text(
+        f'{{"chunk_size": 100, "chunk_overlap": {chunk_overlap}}}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValidationError, match="must be smaller than"):
+        load_settings(config_path)

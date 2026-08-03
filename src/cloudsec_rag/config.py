@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_validator
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -12,13 +12,23 @@ class ExperimentConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     experiment_name: str = "default"
-    chunk_size: int | None = None
-    chunk_overlap: int | None = None
+    chunk_size: int | None = Field(default=None, gt=0)
+    chunk_overlap: int | None = Field(default=None, ge=0)
     top_k: int | None = Field(default=None, gt=0)
     indexes_dir: Path | None = None
     eval_set_path: Path | None = None
     answer_prompt_path: Path | None = None
     faithfulness_judge_prompt_path: Path | None = None
+
+    @model_validator(mode="after")
+    def chunk_overlap_must_be_smaller_than_chunk_size(self) -> "ExperimentConfig":
+        if (
+            self.chunk_size is not None
+            and self.chunk_overlap is not None
+            and self.chunk_overlap >= self.chunk_size
+        ):
+            raise ValueError("chunk_overlap must be smaller than chunk_size")
+        return self
 
 
 class Settings(BaseSettings):
@@ -32,8 +42,8 @@ class Settings(BaseSettings):
         validation_alias="OPENAI_GENERATION_MODEL",
     )
     experiment_name: str = "default"
-    chunk_size: int = 700
-    chunk_overlap: int = 100
+    chunk_size: int = Field(default=700, gt=0)
+    chunk_overlap: int = Field(default=100, ge=0)
     top_k: int = Field(default=3, gt=0)
     raw_docs_dir: Path = Path("data/raw_docs")
     doc_manifest_path: Path = Path("data/doc_manifest.json")
@@ -43,6 +53,12 @@ class Settings(BaseSettings):
     answer_prompt_path: Path = Path("prompts/answer_v1.txt")
     faithfulness_judge_prompt_path: Path = Path("prompts/faithfulness_judge_v1.txt")
     run_reports_dir: Path = Path("reports/runs")
+
+    @model_validator(mode="after")
+    def chunk_overlap_must_be_smaller_than_chunk_size(self) -> "Settings":
+        if self.chunk_overlap >= self.chunk_size:
+            raise ValueError("chunk_overlap must be smaller than chunk_size")
+        return self
 
     model_config = SettingsConfigDict(
         env_file=".env",
