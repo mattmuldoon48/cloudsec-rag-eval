@@ -66,6 +66,22 @@ def test_load_doc_manifest_rejects_duplicate_document_ids(tmp_path):
         load_doc_manifest(manifest_path)
 
 
+def test_load_raw_documents_rejects_orphan_manifest_entries(tmp_path):
+    raw_dir = tmp_path / "raw_docs"
+    raw_dir.mkdir()
+    manifest_path = tmp_path / "doc_manifest.json"
+    manifest_path.write_text(
+        '{"documents": [{"doc_id": "missing"}]}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="Manifest document IDs have no source file: missing",
+    ):
+        load_raw_documents(raw_dir, manifest_path)
+
+
 def test_load_raw_documents_rejects_duplicate_derived_ids(tmp_path):
     raw_dir = tmp_path / "raw_docs"
     raw_dir.mkdir()

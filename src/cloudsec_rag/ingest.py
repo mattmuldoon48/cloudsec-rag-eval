@@ -56,6 +56,12 @@ def load_raw_documents(raw_dir: Path, manifest_path: Path | None = None) -> List
             )
         )
 
+    orphan_doc_ids = sorted(set(manifest) - seen_doc_ids)
+    if orphan_doc_ids:
+        raise ValueError(
+            "Manifest document IDs have no source file: " + ", ".join(orphan_doc_ids)
+        )
+
     return documents
 
 
