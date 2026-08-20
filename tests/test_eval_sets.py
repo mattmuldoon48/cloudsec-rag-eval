@@ -53,6 +53,42 @@ def test_eval_questions_require_expected_documents(tmp_path):
         load_eval_questions(eval_path)
 
 
+@pytest.mark.parametrize(
+    ("row", "message"),
+    [
+        (
+            '{"id":" ","question":"What?","expected_doc_ids":["doc"]}',
+            "id must not be blank",
+        ),
+        (
+            '{"id":"q1","question":" ","expected_doc_ids":["doc"]}',
+            "question must not be blank",
+        ),
+        (
+            '{"id":"q1","question":"What?","expected_doc_ids":[" "]}',
+            "expected_doc_ids entries must not be blank",
+        ),
+        (
+            (
+                '{"id":"q1","question":"What?","expected_doc_ids":["doc"],'
+                '"avoided_doc_ids":[" "]}'
+            ),
+            "avoided_doc_ids entries must not be blank",
+        ),
+    ],
+)
+def test_eval_questions_reject_blank_required_text(
+    tmp_path,
+    row: str,
+    message: str,
+):
+    eval_path = tmp_path / "blank_fields.jsonl"
+    eval_path.write_text(row + "\n", encoding="utf-8")
+
+    with pytest.raises(ValidationError, match=message):
+        load_eval_questions(eval_path)
+
+
 def test_expected_and_avoided_documents_must_not_overlap(tmp_path):
     eval_path = tmp_path / "contradictory_docs.jsonl"
     eval_path.write_text(

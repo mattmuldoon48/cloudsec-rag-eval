@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class Document(BaseModel):
@@ -39,6 +39,18 @@ class EvalQuestion(BaseModel):
     expected_doc_ids: List[str] = Field(min_length=1)
     expected_answer_points: List[str] = Field(default_factory=list)
     avoided_doc_ids: List[str] = Field(default_factory=list)
+
+    @field_validator("id", "question")
+    def required_text_must_not_be_blank(cls, value: str, info):
+        if not value.strip():
+            raise ValueError(f"{info.field_name} must not be blank")
+        return value
+
+    @field_validator("expected_doc_ids", "avoided_doc_ids")
+    def document_ids_must_not_be_blank(cls, value: List[str], info):
+        if any(not doc_id.strip() for doc_id in value):
+            raise ValueError(f"{info.field_name} entries must not be blank")
+        return value
 
     @model_validator(mode="after")
     def expected_and_avoided_documents_must_not_overlap(self) -> "EvalQuestion":
