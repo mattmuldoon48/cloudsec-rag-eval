@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 import json
 from pathlib import Path
 from typing import Iterable, List
@@ -45,6 +46,17 @@ def _validate_index_artifacts(index_dir: Path, chunks: List[Chunk], embeddings: 
     if not chunks:
         raise ValueError(
             f"Invalid index artifacts in {index_dir}: chunks.jsonl contains 0 chunks"
+        )
+
+    duplicate_chunk_ids = sorted(
+        chunk_id
+        for chunk_id, count in Counter(chunk.chunk_id for chunk in chunks).items()
+        if count > 1
+    )
+    if duplicate_chunk_ids:
+        raise ValueError(
+            f"Invalid index artifacts in {index_dir}: duplicate chunk IDs: "
+            + ", ".join(duplicate_chunk_ids)
         )
 
     if (

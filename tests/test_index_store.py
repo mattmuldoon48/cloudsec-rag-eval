@@ -36,6 +36,19 @@ def test_load_index_returns_valid_artifacts_unchanged(tmp_path):
     assert loaded_config == config
 
 
+def test_load_index_rejects_duplicate_chunk_ids(tmp_path):
+    index_dir = tmp_path / "index"
+    chunks = [_chunk(0), _chunk(0)]
+    _save_artifacts(index_dir, chunks, np.ones((2, 2)))
+
+    with pytest.raises(ValueError) as exc_info:
+        load_index(index_dir)
+
+    message = str(exc_info.value)
+    assert str(index_dir) in message
+    assert "duplicate chunk IDs: doc-0" in message
+
+
 @pytest.mark.parametrize("embedding_rows", [1, 3])
 def test_load_index_rejects_embedding_row_count_mismatch(tmp_path, embedding_rows):
     index_dir = tmp_path / "index"
