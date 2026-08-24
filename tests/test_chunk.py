@@ -1,5 +1,8 @@
+import pytest
+from pydantic import ValidationError
+
 from cloudsec_rag.chunk import chunk_documents, chunk_text
-from cloudsec_rag.schemas import Document
+from cloudsec_rag.schemas import Chunk, Document
 
 
 def test_chunk_text_creates_non_empty_chunks():
@@ -23,3 +26,15 @@ def test_chunk_documents_preserves_metadata():
     assert chunks[0].doc_id == "doc1"
     assert chunks[0].title == "Test Doc"
     assert chunks[0].source_path == "path.md"
+
+
+def test_chunk_rejects_negative_index():
+    with pytest.raises(ValidationError):
+        Chunk(
+            chunk_id="doc--1",
+            doc_id="doc",
+            title="Title",
+            source_path="doc.md",
+            chunk_index=-1,
+            text="chunk",
+        )

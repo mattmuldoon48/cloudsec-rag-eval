@@ -21,7 +21,7 @@ class Chunk(BaseModel):
     doc_id: str
     title: str
     source_path: str
-    chunk_index: int
+    chunk_index: int = Field(ge=0)
     text: str
     source_type: str = "sample"
     source_url: str | None = None
