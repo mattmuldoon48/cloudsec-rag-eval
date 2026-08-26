@@ -75,8 +75,13 @@ class EvalRunResult(BaseModel):
     run_id: str
     timestamp: str
     config: dict
-    retrieval_recall_at_k: float
-    average_faithfulness_score: float = 0.0
-    average_latency_ms: float
-    estimated_cost_usd: float
+    retrieval_recall_at_k: float = Field(..., ge=0, le=1, allow_inf_nan=False)
+    average_faithfulness_score: float = Field(
+        default=0.0,
+        ge=0,
+        le=1,
+        allow_inf_nan=False,
+    )
+    average_latency_ms: float = Field(..., ge=0, allow_inf_nan=False)
+    estimated_cost_usd: float = Field(..., ge=0, allow_inf_nan=False)
     per_question_results: List[dict]
