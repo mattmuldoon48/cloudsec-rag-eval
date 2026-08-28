@@ -30,7 +30,7 @@ class Chunk(BaseModel):
 
 
 class RetrievedChunk(Chunk):
-    score: float
+    score: float = Field(allow_inf_nan=False)
 
 
 class EvalQuestion(BaseModel):

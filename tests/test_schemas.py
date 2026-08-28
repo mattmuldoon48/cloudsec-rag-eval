@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from cloudsec_rag.schemas import Chunk, Document, EvalQuestion, EvalRunResult
+from cloudsec_rag.schemas import Chunk, Document, EvalQuestion, EvalRunResult, RetrievedChunk
 
 
 def test_document_schema_validation():
@@ -30,6 +30,20 @@ def test_chunk_schema_validation():
     )
     assert chunk.chunk_id == "doc1-0"
 
+
+
+@pytest.mark.parametrize("score", [float("nan"), float("inf"), float("-inf")])
+def test_retrieved_chunk_rejects_nonfinite_scores(score: float):
+    with pytest.raises(ValidationError):
+        RetrievedChunk(
+            chunk_id="doc1-0",
+            doc_id="doc1",
+            title="title",
+            source_path="file.md",
+            chunk_index=0,
+            text="content",
+            score=score,
+        )
 
 def test_eval_question_schema_missing_fields_raises():
     with pytest.raises(ValueError):
