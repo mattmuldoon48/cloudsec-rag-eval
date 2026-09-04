@@ -63,6 +63,14 @@ The judge returns structured JSON with:
 
 The reported `average_faithfulness_score` is the average judge score across questions. Citation presence and citation-number validity are checked separately in code. Expected answer points are checked with lightweight keyword overlap, so missing-point counts are a heuristic review aid rather than a semantic grading system.
 
+### Interpreting citation checks
+
+- `has_citations` is `true` when the answer contains any bracketed numeric citation such as `[1]`, even if that number is outside the retrieved source list.
+- `citation_coverage` is the fraction of distinct cited numbers within `1..len(retrieved_chunks)`, rounded to four decimal places. Repeated references to the same number count once; answers without numeric citations score `0.0`. With one retrieved chunk, `[1] [1] [2]` scores `0.5`.
+- The exported Markdown **Citations** column shows only `has_citations`, so `yes` does not establish citation-number validity. Inspect `citation_coverage` in the per-question CSV or JSON `answer_eval` object as well.
+
+These are citation-syntax diagnostics, not measures of how many claims are supported or how much of the retrieved evidence was cited. Even `citation_coverage=1.0` does not establish that the cited evidence supports the answer; review the evidence and faithfulness judgment separately.
+
 ## Latency and cost reporting
 
 Latency and estimated cost are included to make experiment tradeoffs visible, not to claim production performance.
