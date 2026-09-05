@@ -93,13 +93,15 @@ Copy the example environment file:
 cp .env.example .env
 ```
 
-Set your OpenAI API key in `.env`. The model names shown in `.env.example` match the checked-in configs:
+Set your OpenAI API key in `.env`. The model names shown in `.env.example` match the application defaults:
 
 ```bash
 OPENAI_API_KEY=
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 OPENAI_GENERATION_MODEL=gpt-4.1-mini
 ```
+
+Model selection comes from `OPENAI_EMBEDDING_MODEL` and `OPENAI_GENERATION_MODEL` in your environment or `.env`, falling back to the defaults above. Passing `--config` does not pin either model: experiment JSON files control chunking, retrieval depth, and index/eval/prompt paths, and reject model fields. Keep the embedding model the same when building and querying an index; after changing `OPENAI_EMBEDDING_MODEL`, rebuild each affected index before running `ask.py` or `run_eval.py`.
 
 ## Demo Commands
 
