@@ -226,6 +226,19 @@ Defaults:
 - faithfulness delta must be at least `-0.01`
 - latency increase must be no more than `1000 ms`
 
+Deltas are **candidate minus baseline**, not relative percentage changes. A negative quality delta means a lower score; a positive latency delta means a slower run. For recall, `-0.01` allows a drop of one percentage point, not one percent of the baseline value. The gate compares deltas rounded to four decimal places for quality and two for latency; equality with a threshold passes.
+
+Override the thresholds explicitly; for example, require no quality decrease while allowing up to 500 ms more average latency:
+
+```bash
+python scripts/check_regression.py reports/runs/baseline.json reports/runs/candidate.json \
+  --min-recall-delta 0 \
+  --min-faithfulness-delta 0 \
+  --max-latency-increase-ms 500
+```
+
+For valid reports, the command prints `PASS` and exits `0` when every gate passes, or prints `FAIL` with the breached thresholds and exits `1`.
+
 CI runs pytest plus a regression-gate fixture so the comparison mechanism is exercised without OpenAI calls.
 
 ## Tests
