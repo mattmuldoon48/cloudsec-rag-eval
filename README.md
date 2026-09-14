@@ -158,10 +158,10 @@ Check regression gates:
 python scripts/check_regression.py reports/runs/baseline.json reports/runs/candidate.json
 ```
 
-Export a report:
+Export a report, replacing the quoted placeholder with the saved report path printed by `run_eval.py`:
 
 ```bash
-python scripts/export_report.py reports/runs/run_official_notes_<timestamp>_<run_id>.json
+python scripts/export_report.py "reports/runs/run_official_notes_<timestamp>_<run_id>.json"
 ```
 
 Sanitized checked-in examples are available under `reports/examples/`, including the current top-5 summary at `reports/examples/official_notes_top5_2026-05-25_summary.md`.
