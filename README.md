@@ -172,6 +172,8 @@ Keep checked-in examples tied to exported summaries from completed local runs. B
 
 Place markdown or text files in `data/raw_docs/`, then add metadata to `data/doc_manifest.json`.
 
+Only `.md` and `.txt` files directly inside `data/raw_docs/` are loaded; subdirectories are not scanned. Each document ID is its filename without the extension, so the manifest entry below corresponds to `aws_iam_best_practices.md` (or `.txt`). IDs must be unique across source files and within the manifest: `guide.md` and `guide.txt` conflict. Every manifest ID must match a loaded, nonempty source file; whitespace-only files are skipped.
+
 Example manifest entry:
 
 ```json
