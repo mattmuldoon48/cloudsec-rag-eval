@@ -77,8 +77,10 @@ Latency and estimated cost are included to make experiment tradeoffs visible, no
 
 - `latency_ms` measures retrieval time for a question.
 - `answer_latency_ms` measures answer generation plus faithfulness judging for a question.
-- `average_latency_ms` averages those recorded phase timings across the run; it is not p95 latency and not a production service SLO.
+- `average_latency_ms` is the mean of the separately recorded phases: for `N` questions, total retrieval-plus-answer/evaluation time is divided by `2 * N`, not `N`. For example, `100 ms` retrieval and `900 ms` answer/evaluation yield a phase average of `500 ms`, not the combined `1000 ms`. It is not end-to-end question latency, p95 latency, or a production service SLO.
 - `estimated_cost_usd` is calculated from approximate token assumptions in `src/cloudsec_rag/metrics.py`; it is not provider billing data.
+
+For combined measured time per question, add its `latency_ms` and `answer_latency_ms` in the JSON report or exported CSV. This includes faithfulness judging, not just answer generation; index loading, eval-set loading, and report writing are outside the recorded phases. Before rounding, the reported phase average is half the mean combined measured time per question; independently rounded saved timings can produce small reconstruction differences.
 
 ## Limitations of the 25-question eval
 
