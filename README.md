@@ -71,6 +71,8 @@ Official-source note references:
 
 ## Setup
 
+Run the setup and demo commands from the repository root (`cloudsec-rag-eval/`). The application loads `.env` from the current working directory, and relative data, prompt, index, and report paths—including paths inside experiment JSON files—are resolved from that directory, not from the config file's directory. Passing an absolute `--config` path does not change this; switch to the repository root before running the scripts.
+
 Create a virtual environment with Python 3.11+:
 
 ```bash
