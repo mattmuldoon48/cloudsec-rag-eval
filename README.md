@@ -243,6 +243,8 @@ python scripts/check_regression.py reports/runs/baseline.json reports/runs/candi
 
 For valid reports, the command prints `PASS` and exits `0` when every gate passes, or prints `FAIL` with the breached thresholds and exits `1`.
 
+`PASS` applies only to the three saved aggregate metrics above. Neither `compare_runs.py` nor `check_regression.py` checks that the runs used the same eval set or question IDs, or recomputes aggregates from `per_question_results`. Confirm that the inputs are comparable using the [evaluation protocol](docs/eval_protocol.md), and review per-question changes before accepting a candidate: an aggregate pass can hide an individual question's regression.
+
 CI runs pytest plus a regression-gate fixture so the comparison mechanism is exercised without OpenAI calls.
 
 ## Tests
