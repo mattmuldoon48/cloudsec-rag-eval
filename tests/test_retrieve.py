@@ -37,3 +37,25 @@ def test_empty_index_returns_no_results_with_unavailable_embedding_provider():
     results = retrieve_chunks("query", [], np.empty((0, 2)), client)
 
     assert results == []
+
+
+def test_cosine_ranking_is_not_biased_by_embedding_magnitude():
+    chunks = [
+        Chunk(
+            chunk_id=name,
+            doc_id=name,
+            title=name,
+            source_path=f"{name}.md",
+            chunk_index=0,
+            text=name,
+        )
+        for name in ["large_diagonal", "aligned", "opposite"]
+    ]
+    embeddings = np.array([[100, 100], [2, 0], [-1, 0]], dtype=np.float32)
+    client = Mock(spec=LLMClient)
+    client.embed_texts.return_value = [[3, 0]]
+
+    results = retrieve_chunks("query", chunks, embeddings, client, top_k=3)
+
+    assert [result.chunk_id for result in results] == ["aligned", "large_diagonal", "opposite"]
+    assert [result.score for result in results] == pytest.approx([1.0, 1 / np.sqrt(2), -1.0])
