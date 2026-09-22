@@ -63,6 +63,12 @@ The judge returns structured JSON with:
 
 The reported `average_faithfulness_score` is the average judge score across questions. Citation presence and citation-number validity are checked separately in code. Expected answer points are checked with lightweight keyword overlap, so missing-point counts are a heuristic review aid rather than a semantic grading system.
 
+### Interpreting judge-output failures
+
+Unparseable judge text or a response that fails the judgment schema becomes a conservative fallback: `faithfulness_score=0.0`, `is_faithful=false`, and `unsupported_claims=["Judge did not return valid JSON."]`. This diagnostic also covers syntactically valid JSON with missing or extra fields, wrong types, or invalid score ranges. Its `rationale` preserves the raw response with surrounding whitespace stripped; it is not an explanation of unsupported answer claims.
+
+Fallback zeros remain in `average_faithfulness_score`, so a drop can reflect unusable judge output rather than a substantive judgment that answers are unfaithful. Inspect `per_question_results[].answer_eval.unsupported_claims` and `.rationale` in the full JSON report to distinguish these cases; compact Markdown/CSV exports omit those diagnostic fields. This fallback handles returned text, not API or network exceptions, which are outside the parser's error handler.
+
 ### Interpreting citation checks
 
 - `has_citations` is `true` when the answer contains any bracketed numeric citation such as `[1]`, even if that number is outside the retrieved source list.
