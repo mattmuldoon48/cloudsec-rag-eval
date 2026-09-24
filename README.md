@@ -113,6 +113,8 @@ Build the official-source-notes index:
 python scripts/build_index.py --config configs/official_notes.json
 ```
 
+`build_index.py` runs ingestion itself; a separate `ingest_docs.py` run is optional for inspecting local output without API calls. The build rewrites `data/processed/docs.jsonl` and `data/processed/chunks.jsonl`, then rebuilds from the raw documents and manifest—not those processed files. Every build requests embeddings for all chunks; there is no incremental embedding cache. For this config, it writes `chunks.jsonl`, `embeddings.npy`, and `index_config.json` under `data/indexes/official_notes/`, replacing existing files there.
+
 Ask a cited question:
 
 ```bash
