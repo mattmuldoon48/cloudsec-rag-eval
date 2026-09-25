@@ -168,6 +168,15 @@ Export a report, replacing the quoted placeholder with the saved report path pri
 python scripts/export_report.py "reports/runs/run_official_notes_<timestamp>_<run_id>.json"
 ```
 
+Exporting reads the saved JSON locally; it does not rerun the eval or make OpenAI calls. By default, it writes `reports/summaries/<report-stem>_summary.md` and `reports/summaries/<report-stem>_questions.csv`, where `<report-stem>` is the input filename without `.json`, and prints both paths. Missing output directories are created. Exporting the same filename stem to the same directory replaces those files, even if the input JSON came from a different directory.
+
+Use `--output-dir` to choose another destination:
+
+```bash
+python scripts/export_report.py "reports/runs/run_official_notes_<timestamp>_<run_id>.json" \
+  --output-dir reports/summaries/review
+```
+
 Sanitized checked-in examples are available under `reports/examples/`, including the current top-5 summary at `reports/examples/official_notes_top5_2026-05-25_summary.md`.
 
 Keep checked-in examples tied to exported summaries from completed local runs. Before replacing one, verify the config name, eval set, top-k, and timestamp match the README metrics it supports.
