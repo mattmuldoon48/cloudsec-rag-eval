@@ -133,6 +133,8 @@ The CLI prints the answer first, then the retrieved source list used for citatio
 
 The source `score` is cosine similarity (`1 - cosine distance`) between the query and each retrieved chunk. Use it to rank evidence within the same index and embedding model; it is not calibrated confidence and should not be compared across experiments with different embedding models.
 
+Retrieval selects up to `top_k` nearest chunks, limited by the number of indexed chunks—not `top_k` distinct documents. Multiple numbered sources can therefore show the same file. There is no minimum similarity cutoff: even zero- or negative-similarity chunks can be returned and passed to answer generation. The CLI does not reject an out-of-corpus question or skip generation based on relevance, so a populated source list does not establish that the corpus can answer it.
+
 A good cited answer should stay inside the retrieved evidence, cite the source notes it used, and say when the local corpus is insufficient. Treat uncited operational advice as a review finding, not as validated guidance.
 
 Run the official-source eval:
