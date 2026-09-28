@@ -38,6 +38,27 @@ The current official-source-notes eval set has 25 questions:
 
 Each JSONL row includes an `id`, `question`, `expected_doc_ids`, and `expected_answer_points`. Some rows also include `avoided_doc_ids`.
 
+### Authoring and validating a custom eval file
+
+Use one JSON object per nonblank line. For example:
+
+```json
+{"id": "custom_iam_1", "question": "How should IAM permissions follow least privilege?", "expected_doc_ids": ["aws_iam_official_notes"], "expected_answer_points": ["grant only needed permissions"]}
+```
+
+The file must contain at least one question. Each row requires a nonblank `id` and `question`, plus a nonempty `expected_doc_ids` list; question IDs must be unique across the file. `expected_answer_points` and `avoided_doc_ids` default to empty lists when omitted. Entries in either document-ID list must be nonblank, and the expected and avoided lists must not overlap. IDs are not trimmed or normalized, so use exact manifest IDs without surrounding whitespace.
+
+After installing the project, run this preflight from the repository root, replacing the final path with your custom file:
+
+```bash
+python -c 'import sys; from pathlib import Path; from cloudsec_rag.evaluate_retrieval import load_eval_questions; questions = load_eval_questions(Path(sys.argv[1])); print(f"Validated {len(questions)} questions")' \
+  data/eval_sets/cloudsec_official_notes_eval_v1.jsonl
+```
+
+This loads and validates questions without an API key, index, or model calls. It does not check that document IDs exist in the manifest or index, or that answer points are supported by the corpus; review those separately.
+
+To evaluate the new file, set `eval_set_path` in a copy of an experiment config, then pass that config to `python scripts/run_eval.py --config PATH`. There is no separate `--eval-set` flag. Relative paths resolve from the repository root, not the config file's directory.
+
 ## Recall@k calculation
 
 Recall@k is calculated per question from document IDs, not chunk IDs:
