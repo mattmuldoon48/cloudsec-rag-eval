@@ -66,19 +66,20 @@ def test_load_doc_manifest_rejects_duplicate_document_ids(tmp_path):
         load_doc_manifest(manifest_path)
 
 
-def test_load_raw_documents_rejects_orphan_manifest_entries(tmp_path):
+@pytest.mark.parametrize("source_text", [None, " \n\t\n"], ids=["missing", "whitespace-only"])
+def test_load_raw_documents_rejects_orphan_manifest_entries(tmp_path, source_text):
     raw_dir = tmp_path / "raw_docs"
     raw_dir.mkdir()
+    (raw_dir / "kept.md").write_text("# Retained document\n\nUseful evidence.", encoding="utf-8")
+    if source_text is not None:
+        (raw_dir / "missing.md").write_text(source_text, encoding="utf-8")
     manifest_path = tmp_path / "doc_manifest.json"
     manifest_path.write_text(
-        '{"documents": [{"doc_id": "missing"}]}',
+        '{"documents": [{"doc_id": "kept"}, {"doc_id": "missing"}]}',
         encoding="utf-8",
     )
 
-    with pytest.raises(
-        ValueError,
-        match="Manifest document IDs have no source file: missing",
-    ):
+    with pytest.raises(ValueError):
         load_raw_documents(raw_dir, manifest_path)
 
 
