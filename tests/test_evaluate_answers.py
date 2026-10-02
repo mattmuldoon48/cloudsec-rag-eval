@@ -171,11 +171,11 @@ def test_citation_coverage_rejects_out_of_range_citations():
     assert citation_coverage(answer) == 0.0
 
 
-def test_citation_coverage_scores_mixed_valid_and_out_of_range_citations():
+def test_citation_coverage_counts_distinct_mixed_validity_references():
     answer = GeneratedAnswer(
         question_id="q1",
         question="What helps least privilege?",
-        answer="Use fine-grained policies [1]. Review unused access [3].",
+        answer="Use fine-grained policies [1]. Restrict permissions [1]. Review unused access [3].",
         citations=[],
         retrieved_chunks=[
             RetrievedChunk(
