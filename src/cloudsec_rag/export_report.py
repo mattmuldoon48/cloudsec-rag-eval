@@ -64,6 +64,11 @@ def per_question_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
+def _markdown_cell(value: Any) -> str:
+    text = str(value).replace("\\", "\\\\").replace("|", "\\|")
+    return text.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "<br>")
+
+
 def markdown_summary(report: dict[str, Any]) -> str:
     summary = summarize_report(report)
     rows = per_question_rows(report)
@@ -96,9 +101,10 @@ def markdown_summary(report: dict[str, Any]) -> str:
 
     for row in rows:
         citation_status = "yes" if row["has_citations"] else "no"
-        missing_points = row["missing_expected_points"] or "none"
+        question_id = _markdown_cell(row["question_id"])
+        missing_points = _markdown_cell(row["missing_expected_points"] or "none")
         lines.append(
-            f"| {row['question_id']} | {row['recall_at_k']} | {row['faithfulness_score']} | "
+            f"| {question_id} | {row['recall_at_k']} | {row['faithfulness_score']} | "
             f"{citation_status} | {missing_points} |"
         )
 

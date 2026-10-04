@@ -1,6 +1,9 @@
 import csv
+import json
 
-from cloudsec_rag.export_report import export_report, markdown_summary, summarize_report
+from markdown_it import MarkdownIt
+
+from cloudsec_rag.export_report import export_report, summarize_report
 
 
 def sample_report() -> dict:
@@ -49,12 +52,32 @@ def test_summarize_report_counts_questions_and_metrics():
     assert summary["average_faithfulness_score"] == 0.9
 
 
-def test_markdown_summary_includes_key_sections():
-    markdown = markdown_summary(sample_report())
+def test_export_preserves_multiline_markdown_cells_and_original_csv_values(tmp_path):
+    report = sample_report()
+    question_id = "q\\|1\r\ncontinued"
+    missing_point = "grant|deny\nreview access"
+    report["per_question_results"][0]["question_id"] = question_id
+    report["per_question_results"][0]["answer_eval"]["missing_expected_points"] = [missing_point]
+    report_path = tmp_path / "run.json"
+    report_path.write_text(json.dumps(report), encoding="utf-8")
 
-    assert "# RAG Evaluation Report: baseline" in markdown
-    assert "## Per-Question Results" in markdown
-    assert "| q1 | 1.0 | 0.9 | yes | none |" in markdown
+    markdown_path, csv_path = export_report(report_path, tmp_path / "summaries")
+
+    tokens = MarkdownIt("commonmark").enable("table").parse(
+        markdown_path.read_text(encoding="utf-8")
+    )
+    assert sum(token.type == "tr_open" for token in tokens) == 2
+    assert sum(token.type == "td_open" for token in tokens) == 5
+    cells = [token for token in tokens if token.type == "inline"][-5:]
+    cell_text = [
+        "".join(child.content for child in cell.children if child.type == "text")
+        for cell in cells
+    ]
+    assert cell_text == ["q\\|1continued", "1.0", "0.9", "yes", "grant|denyreview access"]
+    with csv_path.open(encoding="utf-8", newline="") as handle:
+        row, = csv.DictReader(handle)
+    assert row["question_id"] == question_id
+    assert row["missing_expected_points"] == missing_point
 
 
 def test_export_report_writes_markdown_and_csv(tmp_path):
