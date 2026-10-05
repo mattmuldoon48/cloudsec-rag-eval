@@ -109,6 +109,20 @@ Latency and estimated cost are included to make experiment tradeoffs visible, no
 
 For combined measured time per question, add its `latency_ms` and `answer_latency_ms` in the JSON report or exported CSV. This includes faithfulness judging, not just answer generation; index loading, eval-set loading, and report writing are outside the recorded phases. Before rounding, the reported phase average is half the mean combined measured time per question; independently rounded saved timings can produce small reconstruction differences.
 
+### Cost estimator scope
+
+The evaluator in `src/cloudsec_rag/evaluate_retrieval.py` uses the number of eval questions as `N`. For each question, it adds the character counts of the question, generated answer, and retrieved chunk texts, then integer-divides that sum by four. The sum of those per-question estimates is `T`. The saved cost is:
+
+```text
+estimated_cost_usd = round(N * 0.0004 / 1000 + T * 0.002 / 1000, 6)
+```
+
+The embedding term uses question count, not embedding input tokens. Both rates are hard-coded in `metrics.py` and do not change with the configured embedding or generation model; generation input and output also share one rate. The calculation does not use provider-reported token usage.
+
+Unlike the measured answer latency, this estimate does not separately account for the faithfulness-judge request or response. It also omits index-build embeddings and answer-prompt overhead such as template instructions and source headers.
+
+Use the value only as a rough context-size tradeoff signal, not a total evaluation budget or a model-price comparison. Use provider usage and billing records to measure actual spend.
+
 ## Limitations of the 25-question eval
 
 The current eval is a small local sanity check, not a broad benchmark:
