@@ -98,6 +98,14 @@ Fallback zeros remain in `average_faithfulness_score`, so a drop can reflect unu
 
 These are citation-syntax diagnostics, not measures of how many claims are supported or how much of the retrieved evidence was cited. Even `citation_coverage=1.0` does not establish that the cited evidence supports the answer; review the evidence and faithfulness judgment separately.
 
+### Interpreting expected-answer-point checks
+
+A point counts as covered when **at least half** its distinct normalized keywords occur anywhere in the answer. Matching lowercases ASCII alphanumeric tokens, removes a fixed stopword list, and applies simple suffix stripping. Repeating a keyword does not increase coverage.
+
+For example, the expected point `remove inactive access keys` is treated as covered by `Inactive keys remain enabled.`: `inactive` and `key` match two of four expected keywords. This is a false positive, not acceptable security guidance. `Do not remove inactive access keys.` also passes the keyword check despite negating the requested action. The matcher does not understand negation or relationships between words, and synonymous wording can still be marked missing.
+
+An empty `missing_expected_points` list is therefore not proof of correctness or completeness. It is also empty when no expected points are configured; a point containing only removed stopwords is treated as covered even by an empty answer. Review `per_question_results[].answer_eval.missing_expected_points` alongside the answer, evidence, and independent faithfulness judgment. The keyword diagnostic does not revise the judge's score.
+
 ## Latency and cost reporting
 
 Latency and estimated cost are included to make experiment tradeoffs visible, not to claim production performance.
