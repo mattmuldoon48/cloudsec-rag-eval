@@ -105,6 +105,22 @@ OPENAI_GENERATION_MODEL=gpt-4.1-mini
 
 Model selection comes from `OPENAI_EMBEDDING_MODEL` and `OPENAI_GENERATION_MODEL` in your environment or `.env`, falling back to the defaults above. Passing `--config` does not pin either model: experiment JSON files control chunking, retrieval depth, and index/eval/prompt paths, and reject model fields. Keep the embedding model the same when building and querying an index; after changing `OPENAI_EMBEDDING_MODEL`, rebuild each affected index before running `ask.py` or `run_eval.py`.
 
+### Experiment configuration precedence
+
+For chunking, retrieval depth, and index/eval/prompt paths, precedence is: **non-null experiment JSON value > process environment > `.env` > built-in default**. An omitted field or explicit JSON `null` inherits the base setting; it does not reset that setting to its default.
+
+For example, with `TOP_K=7` in the process environment:
+
+| Experiment JSON | Resolved `top_k` |
+| --- | ---: |
+| `{"top_k": 2}` | 2 |
+| `{"top_k": null}` | 7 |
+| `{}` | 7 |
+
+Without a JSON, environment, or `.env` override, `top_k` is `3`. `experiment_name` is an exception to omitted-field inheritance: any supplied config that omits it sets the name to `"default"`, even if `EXPERIMENT_NAME` was set. Specify the name explicitly to keep report filenames meaningful.
+
+Base environment/`.env` settings are validated before the JSON overlay, so a config cannot repair an invalid base value. The merged settings are validated again, including the requirement that chunk overlap be smaller than chunk size.
+
 ## Demo Commands
 
 Build the official-source-notes index:
