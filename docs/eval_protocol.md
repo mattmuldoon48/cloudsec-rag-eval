@@ -71,6 +71,12 @@ A question expecting one document scores `1.0` if that document appears in any r
 
 `avoided_doc_ids` are reported separately as a retrieval-noise diagnostic. They do not change recall@k and are not part of the regression gate; they identify cases where retrieval pulled documents the eval author expected to be unrelated for that question.
 
+### Interpreting failed retrievals
+
+The exported **Failed retrievals** count (`failed_retrieval_count`) counts questions whose saved `recall_at_k` is below `1.0`, once per question. Finding two of three expected documents therefore counts as one failed retrieval, just as finding none does. This is an incomplete-document-coverage count, not a count of empty result sets, missing documents, or API/execution errors.
+
+Mean recall and the failure count describe different properties: improving a question from zero recall to `2/3` raises mean recall but leaves that question in the failure count. Inspect `expected_doc_ids` and `retrieved_doc_ids` in the JSON report or per-question CSV to identify the missing documents before changing retrieval settings.
+
 ## Faithfulness judging
 
 For each question, the pipeline generates an answer from retrieved evidence and sends the question, answer, and evidence to the faithfulness judge prompt in `prompts/faithfulness_judge_v1.txt`. This is an LLM-as-judge score, so it should be read as a structured review signal rather than an authoritative ground-truth label.
