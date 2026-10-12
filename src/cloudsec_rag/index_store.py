@@ -11,6 +11,8 @@ from .schemas import Chunk
 
 
 def save_index(chunks: Iterable[Chunk], embeddings: np.ndarray, config: dict, index_dir: Path) -> None:
+    chunks = list(chunks)
+    _validate_index_artifacts(index_dir, chunks, embeddings)
     index_dir.mkdir(parents=True, exist_ok=True)
     chunks_path = index_dir / "chunks.jsonl"
     embeddings_path = index_dir / "embeddings.npy"

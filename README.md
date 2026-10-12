@@ -131,6 +131,8 @@ python scripts/build_index.py --config configs/official_notes.json
 
 `build_index.py` runs ingestion itself; a separate `ingest_docs.py` run is optional for inspecting local output without API calls. The build rewrites `data/processed/docs.jsonl` and `data/processed/chunks.jsonl`, then rebuilds from the raw documents and manifest—not those processed files. Every build requests embeddings for all chunks; there is no incremental embedding cache. For this config, it writes `chunks.jsonl`, `embeddings.npy`, and `index_config.json` under `data/indexes/official_notes/`, replacing existing files there.
 
+Before writing index artifacts, `save_index` validates the incoming chunk IDs and embedding shape, numeric type, finiteness, and row count. Rejected chunk/vector data leaves an existing index unchanged and does not create a new index directory. This protection does not roll back the build's earlier processed-data writes, and reportable filesystem or serialization failures during the subsequent index writes are not transactional.
+
 Ask a cited question:
 
 ```bash

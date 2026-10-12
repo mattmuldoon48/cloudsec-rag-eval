@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 import pytest
 
@@ -18,7 +20,13 @@ def _chunk(index: int) -> Chunk:
 
 def _save_artifacts(index_dir, chunks, embeddings) -> dict:
     config = {"embedding_model": "test-model", "dimensions": 2}
-    save_index(chunks, embeddings, config, index_dir)
+    index_dir.mkdir(parents=True, exist_ok=True)
+    (index_dir / "chunks.jsonl").write_text(
+        "".join(chunk.model_dump_json() + "\n" for chunk in chunks),
+        encoding="utf-8",
+    )
+    np.save(index_dir / "embeddings.npy", embeddings)
+    (index_dir / "index_config.json").write_text(json.dumps(config), encoding="utf-8")
     return config
 
 
@@ -26,7 +34,8 @@ def test_load_index_returns_valid_artifacts_unchanged(tmp_path):
     index_dir = tmp_path / "index"
     chunks = [_chunk(0), _chunk(1)]
     embeddings = np.array([[0.1, 0.2], [0.3, 0.4]], dtype=np.float32)
-    config = _save_artifacts(index_dir, chunks, embeddings)
+    config = {"embedding_model": "test-model", "dimensions": 2}
+    save_index(iter(chunks), embeddings, config, index_dir)
 
     loaded_chunks, loaded_embeddings, loaded_config = load_index(index_dir)
 
@@ -34,6 +43,29 @@ def test_load_index_returns_valid_artifacts_unchanged(tmp_path):
     np.testing.assert_array_equal(loaded_embeddings, embeddings)
     assert loaded_embeddings.dtype == embeddings.dtype
     assert loaded_config == config
+
+
+@pytest.mark.parametrize("existing_index", [False, True])
+def test_invalid_rebuild_preserves_index_artifacts(tmp_path, existing_index):
+    index_dir = tmp_path / "index"
+    chunks = [_chunk(0), _chunk(1)]
+    embeddings = np.eye(2, dtype=np.float32)
+    original_config = {"embedding_model": "original-model"}
+    if existing_index:
+        save_index(chunks, embeddings, original_config, index_dir)
+        original_files = {path.name: path.read_bytes() for path in index_dir.iterdir()}
+
+    with pytest.raises(ValueError):
+        save_index(iter(chunks), np.ones((1, 2)), {"embedding_model": "replacement"}, index_dir)
+
+    if existing_index:
+        assert {path.name: path.read_bytes() for path in index_dir.iterdir()} == original_files
+        loaded_chunks, loaded_embeddings, loaded_config = load_index(index_dir)
+        assert loaded_chunks == chunks
+        np.testing.assert_array_equal(loaded_embeddings, embeddings)
+        assert loaded_config == original_config
+    else:
+        assert not index_dir.exists()
 
 
 def test_load_index_rejects_duplicate_chunk_ids(tmp_path):
