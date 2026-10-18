@@ -113,3 +113,26 @@ def test_regression_gate_fails_on_quality_or_latency_regression():
 
     assert result["passed"] is False
     assert len(result["failures"]) == 3
+
+
+@pytest.mark.parametrize(
+    ("threshold", "invalid_value"),
+    [
+        ("min_recall_delta", float("nan")),
+        ("min_faithfulness_delta", float("nan")),
+        ("max_latency_increase_ms", float("nan")),
+        ("min_recall_delta", float("-inf")),
+        ("max_latency_increase_ms", float("inf")),
+    ],
+)
+def test_regression_gate_rejects_nonfinite_thresholds(threshold, invalid_value):
+    diff = {
+        "delta": {
+            "recall_diff": -0.2,
+            "faithfulness_diff": -0.15,
+            "latency_diff_ms": 2500.0,
+        }
+    }
+
+    with pytest.raises(ValueError, match=threshold):
+        check_regression(diff, **{threshold: invalid_value})

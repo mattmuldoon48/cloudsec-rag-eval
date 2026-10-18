@@ -265,6 +265,8 @@ Defaults:
 
 Deltas are **candidate minus baseline**, not relative percentage changes. A negative quality delta means a lower score; a positive latency delta means a slower run. For recall, `-0.01` allows a drop of one percentage point, not one percent of the baseline value. The gate compares deltas rounded to four decimal places for quality and two for latency; equality with a threshold passes.
 
+All three threshold overrides must be finite numbers. `nan`, `inf`, and `-inf` are rejected with an error naming the parameter and a nonzero exit, rather than silently disabling a gate.
+
 Override the thresholds explicitly; for example, require no quality decrease while allowing up to 500 ms more average latency:
 
 ```bash
@@ -274,7 +276,7 @@ python scripts/check_regression.py reports/runs/baseline.json reports/runs/candi
   --max-latency-increase-ms 500
 ```
 
-For valid reports, the command prints `PASS` and exits `0` when every gate passes, or prints `FAIL` with the breached thresholds and exits `1`.
+For valid reports and finite thresholds, the command prints `PASS` and exits `0` when every gate passes, or prints `FAIL` with the breached thresholds and exits `1`.
 
 `PASS` applies only to the three saved aggregate metrics above. Neither `compare_runs.py` nor `check_regression.py` checks that the runs used the same eval set or question IDs, or recomputes aggregates from `per_question_results`. Confirm that the inputs are comparable using the [evaluation protocol](docs/eval_protocol.md), and review per-question changes before accepting a candidate: an aggregate pass can hide an individual question's regression.
 

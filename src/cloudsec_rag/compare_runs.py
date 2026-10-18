@@ -76,6 +76,14 @@ def check_regression(
     min_faithfulness_delta: float = -0.01,
     max_latency_increase_ms: float = 1000.0,
 ) -> dict[str, Any]:
+    for name, threshold in (
+        ("min_recall_delta", min_recall_delta),
+        ("min_faithfulness_delta", min_faithfulness_delta),
+        ("max_latency_increase_ms", max_latency_increase_ms),
+    ):
+        if not math.isfinite(threshold):
+            raise ValueError(f"{name} must be finite")
+
     recall_diff = float(diff["delta"].get("recall_diff") or 0.0)
     faithfulness_diff = float(diff["delta"].get("faithfulness_diff") or 0.0)
     latency_diff_ms = float(diff["delta"].get("latency_diff_ms") or 0.0)
