@@ -232,6 +232,8 @@ The loader skips `data/raw_docs/README.md` so folder instructions do not become 
 
 Rebuild each affected experiment index after changing raw docs, manifest metadata, chunk size, or chunk overlap. `ask.py` and `run_eval.py` read from the configured `data/indexes/` directory, so ingestion alone does not update the vectors used by demos or evals.
 
+Before rebuilding, use the [offline chunk and evidence preview](docs/eval_protocol.md#preview-chunk-text-and-evidence) to inspect split passages and the text that can reach the models. It reads local documents and configuration without creating an index or making API calls.
+
 ## Eval Report Contents
 
 Each JSON report includes:

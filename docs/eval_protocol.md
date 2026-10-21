@@ -17,14 +17,44 @@ The official-source experiments use:
 
 - Configs: `configs/official_notes.json` and `configs/official_notes_top5.json`
 - Eval set: `data/eval_sets/cloudsec_official_notes_eval_v1.jsonl`
-- Chunk size: `700`
-- Chunk overlap: `100`
+- Chunk size: `700` characters
+- Chunk overlap: `100` characters
 - Embedding model: `text-embedding-3-small`
 - Generation model: `gpt-4.1-mini`
 
 `official_notes` retrieves the top 3 chunks. `official_notes_top5` retrieves the top 5 chunks. The index is generated locally under `data/indexes/`, which is ignored by git.
 
 Compare retrieval experiments only when the saved index and eval config describe the same source set, chunking settings, prompt paths, and eval set. If any of those inputs change, treat the result as a new experiment rather than attributing the delta only to top-k.
+
+Chunking uses fixed Python string slices, not token counts, words, or Markdown sections. It strips surrounding whitespace from the input and each window, advances by `chunk_size - chunk_overlap`, and omits empty windows. Words, headings, and code fences can be split. Because window edges are stripped, configured overlap is an offset policy, not a guarantee of that many shared visible characters.
+
+Embedding requests contain only `chunk.text`; manifest titles, source URLs, and notes are not appended to that text. Generation and faithfulness judging instead render the selected chunks with numbered title/path headers. Neither expands a hit to the whole document or neighboring chunks, nor rejoins overlapping windows. A document-level retrieval hit can therefore omit the passage needed to answer the question.
+
+### Preview chunk text and evidence
+
+After setup, run this from the repository root to inspect a chosen chunk without an API key, index build, model call, or output files. This previews `chunks[0]`, not a query's retrieval result; change the index to inspect other windows.
+
+```bash
+python - <<'PY'
+from pathlib import Path
+from cloudsec_rag.chunk import chunk_documents
+from cloudsec_rag.config import load_settings
+from cloudsec_rag.generate import build_evidence_section
+from cloudsec_rag.ingest import load_raw_documents
+from cloudsec_rag.schemas import RetrievedChunk
+
+settings = load_settings(Path("configs/official_notes.json"))
+documents = load_raw_documents(settings.raw_docs_dir, settings.doc_manifest_path)
+chunks = chunk_documents(documents, settings.chunk_size, settings.chunk_overlap)
+chunk = chunks[0]
+print(f"{chunk.chunk_id}: {len(chunk.text)} characters")
+print("Embedding input:", repr(chunk.text))
+# Renderer example only: no similarity score was computed.
+example = RetrievedChunk(**chunk.model_dump(), score=0.0)
+print("Evidence header and text:")
+print(build_evidence_section([example]))
+PY
+```
 
 ## Eval set design
 
