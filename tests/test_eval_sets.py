@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pytest
@@ -101,3 +102,25 @@ def test_expected_and_avoided_documents_must_not_overlap(tmp_path):
 
     with pytest.raises(ValidationError, match="must not overlap"):
         load_eval_questions(eval_path)
+
+
+def test_eval_question_typos_cannot_silently_disable_diagnostics(tmp_path):
+    eval_path = tmp_path / "misspelled_expectations.jsonl"
+    eval_path.write_text(
+        json.dumps({
+            "id": "q1",
+            "question": "What controls apply?",
+            "expected_doc_ids": ["iam"],
+            "avoided_doc_id": ["logs"],
+            "expected_answer_point": ["least privilege"],
+        }) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValidationError) as error:
+        load_eval_questions(eval_path)
+
+    assert {(item["loc"], item["type"]) for item in error.value.errors()} == {
+        (("avoided_doc_id",), "extra_forbidden"),
+        (("expected_answer_point",), "extra_forbidden"),
+    }

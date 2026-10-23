@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class Document(BaseModel):
@@ -34,6 +34,8 @@ class RetrievedChunk(Chunk):
 
 
 class EvalQuestion(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     id: str
     question: str
     expected_doc_ids: List[str] = Field(min_length=1)

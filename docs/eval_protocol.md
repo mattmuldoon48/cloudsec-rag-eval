@@ -78,6 +78,8 @@ Use one JSON object per nonblank line. For example:
 
 The file must contain at least one question. Each row requires a nonblank `id` and `question`, plus a nonempty `expected_doc_ids` list; question IDs must be unique across the file. `expected_answer_points` and `avoided_doc_ids` default to empty lists when omitted. Entries in either document-ID list must be nonblank, and the expected and avoided lists must not overlap. IDs are not trimmed or normalized, so use exact manifest IDs without surrounding whitespace.
 
+Only those five fields are accepted. Unknown keys, including `avoided_doc_id` or `expected_answer_point`, fail validation rather than silently dropping an intended diagnostic. Omit an optional field only when you intentionally do not want that check.
+
 After installing the project, run this preflight from the repository root, replacing the final path with your custom file:
 
 ```bash
