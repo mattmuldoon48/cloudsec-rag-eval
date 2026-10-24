@@ -251,6 +251,8 @@ Each JSON report includes:
 
 Exported summaries include a compact Markdown overview and a per-question CSV. The committed examples in `reports/examples/` are sanitized summaries; generated full reports remain local by default.
 
+For avoided-document pass rates, count only questions with configured `avoided_doc_ids`: unchecked questions also emit `True`, and zero configured checks means **not assessed**. See [interpreting avoided-document checks](docs/eval_protocol.md#interpreting-avoided-document-checks) for JSON and CSV counting rules.
+
 ## Regression Gates
 
 `scripts/check_regression.py` compares a baseline run against a candidate run and exits non-zero if:

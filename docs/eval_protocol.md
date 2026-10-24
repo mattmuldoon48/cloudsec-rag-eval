@@ -101,7 +101,15 @@ matched expected_doc_ids / total expected_doc_ids
 
 A question expecting one document scores `1.0` if that document appears in any retrieved chunk and `0.0` otherwise. A question expecting three documents scores `0.6667` when two of the three expected document IDs appear in the retrieved chunks. The run-level `retrieval_recall_at_k` is the average of per-question recall values.
 
+### Interpreting avoided-document checks
+
 `avoided_doc_ids` are reported separately as a retrieval-noise diagnostic. They do not change recall@k and are not part of the regression gate; they identify cases where retrieval pulled documents the eval author expected to be unrelated for that question.
+
+`avoided_doc_ids_found` lists avoided IDs that were retrieved, and `avoided_doc_ids_pass` is `true` when that list is empty. A question with `avoided_doc_ids: []` also emits `true`: it has no configured avoidance check, not a measured pass.
+
+For an avoided-document pass rate, first select only questions with non-empty `avoided_doc_ids`. The denominator is that selected question count; the numerator is the selected questions with `avoided_doc_ids_pass: true`. If no questions configure avoided IDs, report **not assessed**, not 100% passed. The [checked-in official-notes example](../reports/examples/official_notes_top5_2026-05-25_summary.md) reports `2 / 3` avoided-document checks across 25 questions; the denominator is three, not 25.
+
+The per-question CSV represents an empty avoided-ID list as a blank cell and the pass flag as `True` or `False`. Filter on the avoided-ID column before counting passes; do not treat either non-empty Boolean string as a truthiness test. Inspect JSON or CSV for this diagnostic; the generated Markdown summary does not include it.
 
 ### Interpreting failed retrievals
 
