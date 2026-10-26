@@ -280,7 +280,11 @@ python scripts/check_regression.py reports/runs/baseline.json reports/runs/candi
   --max-latency-increase-ms 500
 ```
 
+Both input JSON reports must contain `retrieval_recall_at_k`, `average_faithfulness_score`, and `average_latency_ms` as finite numbers. Missing fields, `null`, quoted numeric strings, booleans, and nonfinite values are rejected. The diagnostic names the file and field, with `left` identifying the baseline and `right` the candidate.
+
 For valid reports and finite thresholds, the command prints `PASS` and exits `0` when every gate passes, or prints `FAIL` with the breached thresholds and exits `1`.
+
+An invalid saved report is an input error, not a measured regression: both comparison commands exit nonzero before displaying a comparison or gate verdict. A nonzero exit without `PASS`/`FAIL` therefore does not establish a threshold breach. Inspect the named field in the saved JSON rather than relaxing a threshold to address an invalid-input diagnostic.
 
 `PASS` applies only to the three saved aggregate metrics above. Neither `compare_runs.py` nor `check_regression.py` checks that the runs used the same eval set or question IDs, or recomputes aggregates from `per_question_results`. Confirm that the inputs are comparable using the [evaluation protocol](docs/eval_protocol.md), and review per-question changes before accepting a candidate: an aggregate pass can hide an individual question's regression.
 
