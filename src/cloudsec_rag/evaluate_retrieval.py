@@ -117,8 +117,8 @@ def evaluate_retrieval(settings: Settings | None = None) -> EvalRunResult:
         config={
             "experiment_name": settings.experiment_name,
             "top_k": settings.top_k,
-            "chunk_size": settings.chunk_size,
-            "chunk_overlap": settings.chunk_overlap,
+            "chunk_size": config.get("chunk_size"),
+            "chunk_overlap": config.get("chunk_overlap"),
             "embedding_model": settings.openai_embedding_model,
             "generation_model": settings.openai_generation_model,
             "answer_prompt": str(settings.answer_prompt_path),

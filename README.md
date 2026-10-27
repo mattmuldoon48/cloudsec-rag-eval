@@ -163,6 +163,8 @@ python scripts/run_eval.py --config configs/official_notes.json
 
 The eval command writes a timestamped JSON report under `reports/runs/` and prints the saved report path; review aggregate retrieval, faithfulness, latency, and estimated-cost metrics in that JSON or in exported summaries. Generated full reports stay local; only sanitized examples should be committed.
 
+The report's `config.chunk_size` and `config.chunk_overlap` come from the loaded index's recorded build settings, not the current evaluation settings. Changing those settings without rebuilding does not rechunk the index. If the index metadata omits either value, that report field is JSON `null` (unknown), rather than an inferred default. `config.top_k` still describes the current evaluation's retrieval request.
+
 Run the top-5 retrieval experiment:
 
 ```bash
