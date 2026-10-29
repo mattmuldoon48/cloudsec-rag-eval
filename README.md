@@ -73,10 +73,11 @@ Official-source note references:
 
 Run the setup and demo commands from the repository root (`cloudsec-rag-eval/`). The application loads `.env` from the current working directory, and relative data, prompt, index, and report paths—including paths inside experiment JSON files—are resolved from that directory, not from the config file's directory. Passing an absolute `--config` path does not change this; switch to the repository root before running the scripts.
 
-Create a virtual environment with Python 3.11+:
+Create a virtual environment with Python 3.11+. The example selects `python3.11` explicitly to avoid an older `python3` default; substitute another installed compatible Python 3 interpreter if needed, and check its version before creating the environment:
 
 ```bash
-python3 -m venv .venv
+python3.11 --version
+python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e .
