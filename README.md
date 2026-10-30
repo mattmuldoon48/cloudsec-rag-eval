@@ -193,7 +193,12 @@ python scripts/export_report.py "reports/runs/run_official_notes_<timestamp>_<ru
 
 Exporting reads the saved JSON locally; it does not rerun the eval or make OpenAI calls. By default, it writes `reports/summaries/<report-stem>_summary.md` and `reports/summaries/<report-stem>_questions.csv`, where `<report-stem>` is the input filename without `.json`, and prints both paths. Missing output directories are created. Exporting the same filename stem to the same directory replaces those files, even if the input JSON came from a different directory.
 
-In the Markdown table, pipes and line breaks in question IDs and missing answer points stay inside their cells. CSV keeps the original field values, including embedded newlines, for programmatic review.
+In the Markdown table, pipes and line breaks in question IDs and missing answer points stay inside their cells. CSV quoting preserves embedded newlines and punctuation within exported cells, but list values are flattened:
+
+- `expected_doc_ids`, `avoided_doc_ids`, `retrieved_doc_ids`, and `avoided_doc_ids_found` join entries with `, `.
+- `missing_expected_points` joins entries with `; `.
+
+These cells are not lossless arrays: `["iam, logs"]` and `["iam", "logs"]` both export as `iam, logs`. Delimiters inside an item are indistinguishable from list separators. Use the original JSON report for exact list membership, counts, or programmatic comparisons rather than splitting CSV cells.
 
 Use `--output-dir` to choose another destination:
 

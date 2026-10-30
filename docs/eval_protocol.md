@@ -115,7 +115,7 @@ The per-question CSV represents an empty avoided-ID list as a blank cell and the
 
 The exported **Failed retrievals** count (`failed_retrieval_count`) counts questions whose saved `recall_at_k` is below `1.0`, once per question. Finding two of three expected documents therefore counts as one failed retrieval, just as finding none does. This is an incomplete-document-coverage count, not a count of empty result sets, missing documents, or API/execution errors.
 
-Mean recall and the failure count describe different properties: improving a question from zero recall to `2/3` raises mean recall but leaves that question in the failure count. Inspect `expected_doc_ids` and `retrieved_doc_ids` in the JSON report or per-question CSV to identify the missing documents before changing retrieval settings.
+Mean recall and the failure count describe different properties: improving a question from zero recall to `2/3` raises mean recall but leaves that question in the failure count. Inspect `expected_doc_ids` and `retrieved_doc_ids` in the JSON report to identify the missing documents before changing retrieval settings. The per-question CSV joins document-ID lists with `, ` for review; use the JSON arrays for exact programmatic comparisons because an ID can itself contain that delimiter.
 
 ## Faithfulness judging
 
