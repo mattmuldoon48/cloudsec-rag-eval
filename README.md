@@ -242,6 +242,19 @@ Rebuild each affected experiment index after changing raw docs, manifest metadat
 
 Before rebuilding, use the [offline chunk and evidence preview](docs/eval_protocol.md#preview-chunk-text-and-evidence) to inspect split passages and the text that can reach the models. It reads local documents and configuration without creating an index or making API calls.
 
+### Ingest an alternate corpus
+
+To ingest your own corpus without replacing the default processed files, prepare `data/custom_corpus/raw_docs/` and `data/custom_corpus/doc_manifest.json`. The manifest is a JSON object with a `documents` array containing entries like the example above. Use a manifest for that corpus: changing only the raw-docs directory still leaves the default manifest selected.
+
+```bash
+RAW_DOCS_DIR=data/custom_corpus/raw_docs \
+DOC_MANIFEST_PATH=data/custom_corpus/doc_manifest.json \
+PROCESSED_DIR=data/custom_corpus/processed \
+python scripts/ingest_docs.py
+```
+
+These paths come from the process environment or `.env`, not experiment JSON. The command writes `docs.jsonl` and `chunks.jsonl` under the selected processed directory without model calls or index updates. For a later index build, supply the same three environment settings and select a separate `indexes_dir` in the experiment config to avoid replacing an existing index.
+
 ## Eval Report Contents
 
 Each JSON report includes:
