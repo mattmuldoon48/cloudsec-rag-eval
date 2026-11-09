@@ -173,16 +173,18 @@ python scripts/build_index.py --config configs/official_notes_top5.json
 python scripts/run_eval.py --config configs/official_notes_top5.json
 ```
 
-Compare two runs:
+Compare the two saved runs. Replace each quoted placeholder below with the path printed by its `run_eval.py` command: use the `official_notes` run as the baseline and the `official_notes_top5` run as the candidate. Evaluation does not create files named `baseline.json` or `candidate.json`.
 
 ```bash
-python scripts/compare_runs.py reports/runs/baseline.json reports/runs/candidate.json
+BASELINE_REPORT="reports/runs/run_official_notes_<timestamp>_<run_id>.json"
+CANDIDATE_REPORT="reports/runs/run_official_notes_top5_<timestamp>_<run_id>.json"
+python scripts/compare_runs.py "$BASELINE_REPORT" "$CANDIDATE_REPORT"
 ```
 
-Check regression gates:
+Check regression gates using the same saved reports:
 
 ```bash
-python scripts/check_regression.py reports/runs/baseline.json reports/runs/candidate.json
+python scripts/check_regression.py "$BASELINE_REPORT" "$CANDIDATE_REPORT"
 ```
 
 Export a report, replacing the quoted placeholder with the saved report path printed by `run_eval.py`:
@@ -292,10 +294,10 @@ Deltas are **candidate minus baseline**, not relative percentage changes. A nega
 
 All three threshold overrides must be finite numbers. `nan`, `inf`, and `-inf` are rejected with an error naming the parameter and a nonzero exit, rather than silently disabling a gate.
 
-Override the thresholds explicitly; for example, require no quality decrease while allowing up to 500 ms more average latency:
+Override the thresholds explicitly using the `BASELINE_REPORT` and `CANDIDATE_REPORT` variables set in Demo Commands; for example, require no quality decrease while allowing up to 500 ms more average latency:
 
 ```bash
-python scripts/check_regression.py reports/runs/baseline.json reports/runs/candidate.json \
+python scripts/check_regression.py "$BASELINE_REPORT" "$CANDIDATE_REPORT" \
   --min-recall-delta 0 \
   --min-faithfulness-delta 0 \
   --max-latency-increase-ms 500
