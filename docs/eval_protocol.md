@@ -96,8 +96,10 @@ To evaluate the new file, set `eval_set_path` in a copy of an experiment config,
 Recall@k is calculated per question from document IDs, not chunk IDs:
 
 ```text
-matched expected_doc_ids / total expected_doc_ids
+len(set(retrieved_doc_ids) & set(expected_doc_ids)) / len(set(expected_doc_ids))
 ```
+
+Both lists are treated as sets for scoring. For example, expected IDs `["iam", "iam", "logs"]` and retrieved IDs `["iam"]` produce recall `0.5`; repeated expected IDs do not weight a document more heavily.
 
 A question expecting one document scores `1.0` if that document appears in any retrieved chunk and `0.0` otherwise. A question expecting three documents scores `0.6667` when two of the three expected document IDs appear in the retrieved chunks. The run-level `retrieval_recall_at_k` is the average of per-question recall values.
 
